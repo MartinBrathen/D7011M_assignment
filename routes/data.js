@@ -59,7 +59,7 @@ router.get('/price', (req, res) => {
     // 900 kW/month = 1.25kW
     // 48.25 öre/kWh
     var wind = getWindSpeed(0, 0, new Date()); // m/s //avg 5.26
-    var consumtion = getTotalConsumption(); // kW     //avg 1.25
+    var consumption = getTotalConsumption(); // kW     //avg 1.25
     var scalar = 48.25/5.26/1.25;
     var result = scalar * wind/(consumption + 0.0001); // öre/kWh
     res.json({
