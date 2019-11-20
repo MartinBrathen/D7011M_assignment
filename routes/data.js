@@ -8,6 +8,7 @@ const noise = fastnoise.Create(1337);
 noise.SetNoiseType(fastnoise.Simplex);
 
 
+
 router.get('/', (req, res) => {
     res.send('/weather or /price');
 });
@@ -38,19 +39,38 @@ router.get('/weather/:lat/:long/:year-:month-:day::hr::min::sec', (req, res) => 
     
     console.log(date);
     
-    res.send("" + windSpeed(lat, long, date));
+    res.send("" + getWindSpeed(lat, long, date));
+});
+
+router.get('/weather', (req, res) => {
+    res.send(getWindTable(-90, 90, 0, 360, 60));
 });
 
 router.get('/weather/:lat/:long', (req, res) => {
+
     var lat = req.params.lat;
     var long = req.params.long;
     
-    res.send("" + windSpeed(lat, long, new Date()));
+    res.send("" + getWindSpeed(lat, long, new Date()));
+});
+
+
+router.get('/price', (req, res) => {
+    // 900 kW/month = 1.25kW
+    // 48.25 öre/kWh
+    var wind = getWindSpeed(0, 0, new Date()); // m/s //avg 5.26
+    var consumtion = getTotalConsumption(); // kW     //avg 1.25
+    var scalar = 48.25/5.26/1.25;
+    var result = scalar * wind/(consumption + 0.0001); // öre/kWh
+    res.json({
+        "price" : result,
+        "unit" : "öre/kWh",
+    });
 });
 
 
 
-function windSpeed(long, lat, date){
+function getWindSpeed(long, lat, date){
     //date is js Date 
     // 1 day = 24h = 1440m = 86400s = 86400000ms
 
@@ -68,7 +88,9 @@ function windSpeed(long, lat, date){
     var val = noise.GetNoise(x*scale + offset, y*scale + offset, z*scale + offset); //returns windspeed on range [-1, 1]
 
     //map to realistic number
-    return val;
+    val = (val + 1); // [0, 2]
+    val = val * 5.26; // [0, 10.52] m/s
+    return val; 
 }
 
 function map(x, a, b, c, d){
@@ -78,11 +100,11 @@ function map(x, a, b, c, d){
 function getWindTable(minlat, maxlat, minlong, maxlong, vertcells){
     var str = '<table style = "border-collapse:collapse;">';
     var inc = (maxlat - minlat) / vertcells;
-    for (var y = minlat; y < maxlat; y+=inc){
+    for (var y = minlat; y < maxlat; y += inc) {
         str += '<tr style ="padding:0px;margin:0px;">';
         for (var x = minlong; x < maxlong; x+=inc){
-            var val = windSpeed(x, y, parseInt(date));
-            val = (val+1)*255/2;
+            var val = getWindSpeed(x, y, new Date());
+            val = map(val, 0, 10.52, 0, 255);
             str += '<td style="width:6px;height:6px;padding:0px;margin:0px;background:rgb('+val+','+val+','+val+');"></td>';
         }
         str += '</tr>';

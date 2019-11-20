@@ -8,9 +8,7 @@ const dataRoute = require('./routes/data');
 
 app.use('/data', dataRoute);
 
-app.get('/:opt', function (req, res){
-    
-    
+app.get('/:opt', function (req, res){ 
     res.json(
         {
             "test":"123", 
