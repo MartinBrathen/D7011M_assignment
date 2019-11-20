@@ -127,11 +127,11 @@ router.get('/consumption/total', (req, res) => {
     var long = req.params.long;
     
     res.json({
-        consumption : getTotalConsumption(1000),
+        consumption : getTotalConsumption(),
         'unit' : 'kW',
     });
 });
-function getTotalConsumption(nrOfConsumers) {
+function getTotalConsumption(nrOfConsumers = 1000) {
     var temp = 0;
     for (i = 0; i < nrOfConsumers; i += 1) {
         temp += getConsumption();
