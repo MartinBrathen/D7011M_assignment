@@ -91,4 +91,44 @@ function getWindTable(minlat, maxlat, minlong, maxlong, vertcells){
     return str;
 }
 
+router.get('/consumption', (req, res) => {
+    var lat = req.params.lat;
+    var long = req.params.long;
+    
+    res.json({
+        consumption : getConsumption(),
+        'unit' : 'kW',
+    });
+});
+router.get('/consumption/total', (req, res) => {
+    var lat = req.params.lat;
+    var long = req.params.long;
+    
+    res.json({
+        consumption : getTotalConsumption(1000),
+        'unit' : 'kW',
+    });
+});
+function getTotalConsumption(nrOfConsumers) {
+    var temp = 0;
+    for (i = 0; i < nrOfConsumers; i += 1) {
+        temp += getConsumption();
+    }
+    return temp;
+}
+/**
+ * returns int
+ */
+function getConsumption() {
+    return randomG(3) * 2;
+}
+function randomG(v){ 
+    var r = 0;
+    for(var i = v; i > 0; i --){
+        r += Math.random();
+    }
+    return r / v;
+}
+
+
 module.exports = router;
