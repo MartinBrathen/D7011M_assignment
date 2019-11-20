@@ -7,5 +7,5 @@
 |19-11-13|200|reading and experimenting with node, express, RESTful, pug|
 |19-11-14|60|discussing plan|
 |19-11-15|360|weather math model|
-|19-11-20|120|api get price, weather|
+|19-11-20|160|api get price, weather|
 
