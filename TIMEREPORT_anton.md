@@ -8,4 +8,5 @@
 |19-11-14|60|discussing plan|
 |19-11-15|360|weather math model|
 |19-11-20|160|api get price, weather|
+|19-11-21|180|lecture|
 
