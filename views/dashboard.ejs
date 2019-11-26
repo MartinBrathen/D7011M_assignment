@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%=title%></title>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <style>
+            .meter{
+                width: 200px;
+                height: 30px;
+                border: 2px solid black;
+                position: relative;
+            }
+            .bar {
+                background:rgb(87, 87, 173);
+                width: 50%;
+            }
+            .meter > span {
+                
+                height: 100%;
+                display:block;
+                position: absolute;
+            }
+        </style>
+    </head>
+    <body>
+        <form action="/" method="POST" id="sendText">
+            <input type="text" id="txt">
+            <button>test</button>
+        </form>
+        <button id="update">update</button></br>
+        consumption:<div class="meter"><span id="consumptionBar" class="bar"></span><span id="consumptionVal"></span></div>
+        <p id="minmaxConsumption"></p>
+
+        wind speed:<div class="meter"><span id="windBar" class="bar"></span><span id="windVal"></span></div>
+        <p id="minmaxWind"></p>
+
+        <script>
+            var maxConsumption = Number.NEGATIVE_INFINITY;
+            var minConsumption = Number.POSITIVE_INFINITY;
+            var maxWind = Number.NEGATIVE_INFINITY;
+            var minWind = Number.POSITIVE_INFINITY;
+
+            function updateConsumption() {
+                $.get("../data/consumption", (data, status) => {
+                    if (data.consumption > maxConsumption) {
+                        maxConsumption = data.consumption;
+                    }else if (data.consumption < minConsumption){
+                        minConsumption = data.consumption;
+                    }
+                    var rel = (data.consumption - minConsumption) / (maxConsumption - minConsumption);
+                    $("#minmaxConsumption").text(minConsumption + ", " + maxConsumption);
+                    $("#consumptionVal").text(data.consumption);
+                    $("#consumptionBar").stop(false, true);
+                    $("#consumptionBar").animate({width: rel * 100 + "%"}, "fast");
+                });
+            }
+
+            function updateWind() {
+                $.get("../data/weather", (data, status) => {
+                    if (data.windspeed > maxWind) {
+                        maxWind = data.windspeed;
+                    }else if (data.windspeed < minWind){
+                        minWind = data.windspeed;
+                    }
+                    var rel = (data.windspeed - minWind) / (maxWind - minWind);
+                    $("#minmaxWind").text(minWind + ", " + maxWind);
+                    $("#windVal").text(data.windspeed);
+                    $("#windBar").stop(false, true); // stop the previous animation to prevent the animation queue from building up
+                    $("#windBar").animate({width: rel * 100 + "%"}, "fast");
+                });
+            }
+
+            // if this is moved to a separate file to clean up, then encase code in : $(document).ready(function(){ code }
+            $("#sendText").submit( (e) =>{
+                e.preventDefault();
+                $("body").css("background", $("#txt").val());
+            });
+
+            $("#update").click(()=>{
+                updateConsumption();
+                updateWind();
+            });
+            updateConsumption();
+            updateWind();
+            setInterval(updateConsumption, 10000);
+            setInterval(updateWind, 10000);
+        </script>
+    </body>
+</html>
