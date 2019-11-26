@@ -42,8 +42,18 @@ router.get('/weather/:lat/:long/:year-:month-:day::hr::min::sec', (req, res) => 
     res.send("" + getWindSpeed(lat, long, date));
 });
 
-router.get('/weather', (req, res) => {
+router.get('/weather/world', (req, res) => {
     res.send(getWindTable(-90, 90, 0, 360, 60));
+});
+
+router.get('/weather', (req, res) => {
+    var lat = 0.0;
+    var long = 0.0;
+    
+    res.json({
+        "windspeed" : getWindSpeed(lat, long, new Date()),
+        "unit": "m/s"
+    });
 });
 
 router.get('/weather/:lat/:long', (req, res) => {
@@ -51,7 +61,10 @@ router.get('/weather/:lat/:long', (req, res) => {
     var lat = req.params.lat;
     var long = req.params.long;
     
-    res.send("" + getWindSpeed(lat, long, new Date()));
+    res.json({
+        "windspeed" : getWindSpeed(lat, long, new Date()),
+        "unit": "m/s"
+    });
 });
 
 
@@ -59,7 +72,7 @@ router.get('/price', (req, res) => {
     // 900 kW/month = 1.25kW
     // 48.25 öre/kWh
     var wind = getWindSpeed(0, 0, new Date()); // m/s //avg 5.26
-    var consumption = getTotalConsumption(); // kW     //avg 1.25
+    var consumption = getTotalConsumption(); // kW     //avg 1.25 * totalHouseholds
     var scalar = 48.25/5.26/1.25;
     var result = scalar * wind/(consumption + 0.0001); // öre/kWh
     res.json({
@@ -122,6 +135,7 @@ router.get('/consumption', (req, res) => {
         'unit' : 'kW',
     });
 });
+
 router.get('/consumption/total', (req, res) => {
     var lat = req.params.lat;
     var long = req.params.long;
@@ -131,6 +145,7 @@ router.get('/consumption/total', (req, res) => {
         'unit' : 'kW',
     });
 });
+
 function getTotalConsumption(nrOfConsumers = 1000) {
     var temp = 0;
     for (i = 0; i < nrOfConsumers; i += 1) {
@@ -144,6 +159,7 @@ function getTotalConsumption(nrOfConsumers = 1000) {
 function getConsumption() {
     return randomG(3) * 2;
 }
+
 function randomG(v){ 
     var r = 0;
     for(var i = v; i > 0; i --){
