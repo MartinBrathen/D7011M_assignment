@@ -7,7 +7,9 @@ app.set('view engine', 'ejs')
 const dataRoute = require('./routes/data');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/test', {useNewUrlParser: true});
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.connect('mongodb://localhost:27017/test');
 mongoose.model('test2', {name: String})
 
 app.use('/data', dataRoute);
