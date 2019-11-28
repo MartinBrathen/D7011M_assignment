@@ -7,4 +7,5 @@
 |19-11-20|120|get method for consumption data|
 |19-11-20|30|deploy to server|
 |19-11-28|60|DNS management(new ip from aws)|
-|19-11-20|30|deploy to server|
+|19-11-28|30|deploy to server|
+|19-11-28|60|installed mongdb on server and simple test|
