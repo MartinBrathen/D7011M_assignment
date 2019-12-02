@@ -1,0 +1,34 @@
+{
+  "name": "d7011m_assignment",
+  "version": "1.0.0",
+  "description": "assignment for course D7011E",
+  "main": "express_example.js",
+  "dependencies": {
+    "bcrypt": "^3.0.7",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "express-flash": "0.0.2",
+    "express-session": "^1.17.0",
+    "fastnoisejs": "^1.0.1",
+    "mongoose": "^5.7.13",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.1"
+  },
+  "scripts": {
+    "start": "nodemon express_example.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartinBrathen/D7011M_assignment.git"
+  },
+  "author": "AM",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MartinBrathen/D7011M_assignment/issues"
+  },
+  "homepage": "https://github.com/MartinBrathen/D7011M_assignment#readme"
+}
