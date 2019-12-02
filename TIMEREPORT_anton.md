@@ -10,4 +10,4 @@
 |19-11-20|160|api get price, weather|
 |19-11-21|180|lecture|
 |19-11-26|200|prosumer dashboard|
-
+|19-12-02|220|login logout register|
