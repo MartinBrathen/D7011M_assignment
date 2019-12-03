@@ -6,13 +6,22 @@ const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const flash = require('express-flash');
 const session = require('express-session');
 
-const initializePassport = require('./passport-config');
-initializePassport(passport, dbGetUserByName, dbGetUserById);
+var mongoose = require('mongoose');
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.connect('mongodb://localhost:27017/prosumer');
+const user = require('./models/user');
 
+passport.use(new LocalStrategy(user.authenticate()));
+passport.serializeUser(user.serializeUser());
+passport.deserializeUser(user.deserializeUser());
 
+//const initializePassport = require('./passport-config');
+//initializePassport(passport, dbGetUserByName, dbGetUserById);
 
 app.set('view engine', 'ejs')
 app.use(express.urlencoded({extended: false})); // allows form data to be accessed in request
@@ -27,14 +36,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const dataRoute = require('./routes/data');
-
-var mongoose = require('mongoose');
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useUnifiedTopology', true);
-//mongoose.connect('mongodb://localhost:27017/test');
-mongoose.model('test2', {name: String})
-
-
 
 app.use('/data', dataRoute);
 
@@ -72,19 +73,21 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
     res.render('register.ejs')
 });
 
-app.post('/register', checkNotAuthenticated, async (req, res) => {
-    try {
-        const pwd = await bcrypt.hash(req.body.password, 10);
-        dbAddUser(req.body.name, pwd);
+app.post('/register', checkNotAuthenticated, function(req, res, next) {
+    console.log(req.body.name);
+    user.register(new user({username: req.body.name}), req.body.password, function(err) {
+        if (err) {
+            console.log('error: ' , err);
+            return res.redirect("/register")
+        }
+        
         res.redirect('/login');
-    } catch (error) {
-        res.redirect('/register');
-    }
+    });
 });
 
 app.get('/logout', checkAuthenticated, (req, res) => {
     req.logOut(); // from passport
-    req.redirect('/login');
+    res.redirect('/login');
 });
 
 function dbAddUser(name, pwd){
