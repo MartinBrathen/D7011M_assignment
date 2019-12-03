@@ -9,3 +9,4 @@
 |19-11-28|60|DNS management(new ip from aws)|
 |19-11-28|30|deploy to server|
 |19-11-28|60|installed mongdb on server and simple test|
+|19-12-03|300|login with mongodb|
