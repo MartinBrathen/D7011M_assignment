@@ -1,0 +1,42 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+
+header {
+    background: grey;
+    width: 100%;
+}
+
+.item-container {
+    display: flex;
+    flex-direction: column;
+    background: rgb(202, 202, 128);
+}
+
+.item {
+    font-size: 40px;
+    margin: 10px;
+    background: rgb(233, 132, 132);
+}
+
+
+
+
+
+.meter{
+    width: 200px;
+    height: 30px;
+    border: 2px solid black;
+    position: relative;
+}
+.bar {
+    background:rgb(87, 87, 173);
+    width: 50%;
+}
+.meter > span {
+    
+    height: 100%;
+    display:block;
+    position: absolute;
+}

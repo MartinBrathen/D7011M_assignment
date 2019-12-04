@@ -38,6 +38,7 @@ app.use(passport.session());
 const dataRoute = require('./routes/data');
 
 app.use('/data', dataRoute);
+app.use(express.static(__dirname + '/public'));
 
 app.use('/', (res, req, next) => {
     // console.log("recieved request, maybe log?");
@@ -89,26 +90,6 @@ app.get('/logout', checkAuthenticated, (req, res) => {
     req.logOut(); // from passport
     res.redirect('/login');
 });
-
-function dbAddUser(name, pwd){
-    console.log(`name: ${name} pwd:${pwd}`);
-}
-
-function dbGetUserByName(name){
-    return {
-        _id: '5ddf8d002e2e694576f84b88',
-        name: 'anton',
-        password: '$2b$10$BkqhoW3CKuJCe36i3VUNR.1WdgWGCQG9YM2E4ZOY7edw.woqkZ/Aq'
-    };
-}
-
-function dbGetUserById(id){
-    return {
-        _id: '5ddf8d002e2e694576f84b88',
-        name: 'anton',
-        password: '$2b$10$BkqhoW3CKuJCe36i3VUNR.1WdgWGCQG9YM2E4ZOY7edw.woqkZ/Aq'
-    };
-}
 
 function checkAuthenticated(req, res, next){
     // req.isAuthenticated() is from passport

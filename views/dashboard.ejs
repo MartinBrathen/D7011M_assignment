@@ -3,27 +3,80 @@
     <head>
         <title><%=title%></title>
         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-        <style>
-            .meter{
-                width: 200px;
-                height: 30px;
-                border: 2px solid black;
-                position: relative;
-            }
-            .bar {
-                background:rgb(87, 87, 173);
-                width: 50%;
-            }
-            .meter > span {
-                
-                height: 100%;
-                display:block;
-                position: absolute;
-            }
-        </style>
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
     </head>
     <body>
         <%- include('header'); %>
+        <h1>Dashboard</h1>
+        <div class="item-container">
+            <div class="item">
+                speed: <span id="wind"></span>
+            </div>
+            <div class="item">
+                consumption: <span id="consumption"></span>
+            </div>
+            <div class="item">
+                production: <span id="production"></span>
+            </div>
+            <div class="item">
+                net production: <span id="net"></span>
+            </div>
+            <div class="item">
+                buffer: <span id="buffer"></span>
+            </div>
+            <div class="item">
+                price <span id="price"></span>
+            </div>
+        </div>
+
+        <script>
+            var weather = null;
+            var consumption = null;
+            var price = null;
+            var production = null;
+            var k = .2;
+            var production = null;
+            var net = null;
+
+            function update() {
+                
+
+                $.get("../data/weather", (data, status) => {            
+                    weather = data;
+                    $("#wind").text(`${weather.windspeed} ${weather.unit}`);
+                });
+
+                
+                $.get("../data/consumption", (data, status) => {
+                    consumption = data;
+                    $("#consumption").text(`${consumption.consumption} ${consumption.unit}`);
+                });
+
+                $.get("../data/price", (data, status) => {
+                    price = data;
+                    $("#price").text(`${price.price} ${price.unit}`);
+                });
+
+                if (weather !== null){
+                    production = {val: weather.windspeed * k, unit: 'kW'};
+                    $("#production").text(`${production.val} ${production.unit}`);
+                }
+                
+                if (production !== null && consumption !== null) {
+                    net = {val: production.val - consumption.consumption, unit: 'kW'};
+                    $("#net").text(`${net.val} ${net.unit}`);
+                }
+                      
+            }
+
+            
+            update();
+            setInterval(update, 1000);
+        </script>
+
+
+
+        <!--
         <h2>hello <%= name %></h2>
         <form action="/" method="POST" id="sendText">
             <input type="text" id="txt">
@@ -87,5 +140,6 @@
             setInterval(updateConsumption, 10000);
             setInterval(updateWind, 10000);
         </script>
+    -->
     </body>
 </html>
