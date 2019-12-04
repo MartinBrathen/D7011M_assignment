@@ -12,3 +12,5 @@
 |19-11-26|200|prosumer dashboard|
 |19-12-02|220|login logout register|
 |19-12-03|110|local mongo|
+|19-12-03|140|dashboard psudo production|
+
