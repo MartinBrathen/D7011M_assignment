@@ -1,2 +1,3 @@
 - Using let't encrypt to allow https
 - Using passport-local-mongoose plugin, which automatically salts, encrypts password and protects again injection attacks.
+- No passwords and secrets are uploaded to github
