@@ -20,7 +20,9 @@ header {
     background: rgb(233, 132, 132);
 }
 
-
+.profile-pic > img {
+    border: 2px solid black;
+}
 
 
 

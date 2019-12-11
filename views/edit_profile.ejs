@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+    </head>
+    <body>
+        <%- include('header'); %>
+        
+        <h1>Edit profile</h1>
+        <form action="/profile/edit" method="POST" >
+            <label>username</label>
+            <input name="username" type="text" value ="<%= locals.username %>">
+            <label>profile picture</label>
+            <input name="profile-pic" type="text">
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+</html>
