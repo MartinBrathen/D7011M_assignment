@@ -27,17 +27,13 @@
             <div class="item">
                 price <span id="price"></span>
             </div>
-            <div class="item">
-                <img src="<%=picture%>" alt="no image"> 
-            </div>
-            <div class="item">
-                <form action="/pictureUrl" method="POST">
-                    Picture Url:<input type="text" id="picture" name="picture"><br>
-                    <button type="submit">Update picture</button>
-            </div>
+            
         </div>
         <div class="profile-pic">
-            <img src="/img/house.jpg">
+            <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
+            <form action="/pictureUrl" method="POST">
+                Picture Url:<input type="text" id="picture" name="picture"><br>
+                <button type="submit">Update picture</button>
         </div>
 
         <script>
