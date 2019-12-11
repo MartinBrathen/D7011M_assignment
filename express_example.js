@@ -40,13 +40,22 @@ const dataRoute = require('./routes/data');
 app.use('/data', dataRoute);
 app.use(express.static(__dirname + '/public'));
 
+// app.use((res, req, next) => {
+//     console.log("hello");
+//     if (req.isAuthenticated()){
+//         res.locals.username = req.user.username;
+//         console.log(req.user.username);
+//     }
+//     next();
+// });
+
 app.use('/', (res, req, next) => {
     // console.log("recieved request, maybe log?");
     next();
 });
 
 app.get('/', (req, res) => {
-    res.send(req.user.name);
+    res.send(req.user);
 });
 
 app.get('/dashboard', checkAuthenticated, (req, res) => {
@@ -63,11 +72,6 @@ app.post('/pictureUrl', checkAuthenticated, (req, res) => {
         });
         res.redirect('/dashboard');
     });
-
-    /* console.log(req.body.picture);
-    console.log(req.user.username);
-    user.updateOne({username: req.user.username}, {picture: req.body.picture});
-    res.redirect('/dashboard'); */
 });
 
 app.get('/dbtest', (req, res) => {
@@ -96,6 +100,8 @@ app.post('/register', checkNotAuthenticated, function(req, res, next) {
     user.register(new user({username: req.body.name}), req.body.password, function(err) {
         if (err) {
             console.log('error: ' , err);
+            req.flash('error', err.message);
+            
             return res.redirect("/register")
         }
         
@@ -106,6 +112,14 @@ app.post('/register', checkNotAuthenticated, function(req, res, next) {
 app.get('/logout', checkAuthenticated, (req, res) => {
     req.logOut(); // from passport
     res.redirect('/login');
+});
+
+app.get('/profile/edit', userNameTest, (req, res) => {
+    res.render('edit_profile');
+});
+
+app.post('/profile/edit', (req, res) => {
+    res.json(req.body);
 });
 
 function checkAuthenticated(req, res, next){
@@ -119,10 +133,17 @@ function checkAuthenticated(req, res, next){
 
 function checkNotAuthenticated(req, res, next){
     if (req.isAuthenticated()){
-        return res.redirect('/');
+        return res.redirect('/dashboard');
     }else{
         next();
     }
+}
+
+function userNameTest(req, res, next) {
+    if (req.isAuthenticated()){
+        res.locals.username = req.user.username;
+    }
+    next();
 }
 
 
