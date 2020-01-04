@@ -51,28 +51,28 @@
                 $.get("../data/weather", (data, status) => {            
                     weather = data;
                     $("#wind").text(`${weather.windspeed} ${weather.unit}`);
+
+                    if (weather !== null){
+                        production = {val: weather.windspeed * k, unit: 'kW'};
+                        $("#production").text(`${production.val} ${production.unit}`);
+                    }
                 });
 
-                
                 $.get("../data/consumption", (data, status) => {
                     consumption = data;
+                    console.log('/consumption: ' + consumption.consumption);
                     $("#consumption").text(`${consumption.consumption} ${consumption.unit}`);
+                    if (production !== null && consumption !== null) {
+                        net = {val: production.val - consumption.consumption, unit: 'kW'};
+                        console.log('prod: ' + consumption.consumption);
+                        $("#net").text(`${net.val} ${net.unit}`);
+                    }
                 });
 
                 $.get("../data/price", (data, status) => {
                     price = data;
                     $("#price").text(`${price.price} ${price.unit}`);
                 });
-
-                if (weather !== null){
-                    production = {val: weather.windspeed * k, unit: 'kW'};
-                    $("#production").text(`${production.val} ${production.unit}`);
-                }
-                
-                if (production !== null && consumption !== null) {
-                    net = {val: production.val - consumption.consumption, unit: 'kW'};
-                    $("#net").text(`${net.val} ${net.unit}`);
-                }
                       
             }
 
