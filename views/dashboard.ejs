@@ -29,14 +29,30 @@
             </div>
             
         </div>
+
+        <form id="coordinateForm">
+            Latitude<input type="number" name="lat" value=0>
+            Longitude<input type="number" name="long" value=0>
+            <input type="submit" value="Submit">
+        </form>
+        
         <div class="profile-pic">
             <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
             <form action="/pictureUrl" method="POST">
                 Picture Url:<input type="text" id="picture" name="picture"><br>
                 <button type="submit">Update picture</button>
         </div>
+        
 
         <script>
+
+            $("#coordinateForm").submit((e)=>{
+                e.preventDefault();
+                console.log(e.target[0].value);
+                lat = e.target[0].value;
+                long = e.target[1].value;
+            });
+
             var weather = null;
             var consumption = null;
             var price = null;
@@ -44,11 +60,13 @@
             var k = .2;
             var production = null;
             var net = null;
+            var lat = 0;
+            var long = 0;
 
             function update() {
                 
 
-                $.get("../data/weather", (data, status) => {            
+                $.get("../data/weather/" + lat + '/' + long, (data, status) => {            
                     weather = data;
                     $("#wind").text(`${weather.windspeed} ${weather.unit}`);
 
@@ -60,11 +78,9 @@
 
                 $.get("../data/consumption", (data, status) => {
                     consumption = data;
-                    console.log('/consumption: ' + consumption.consumption);
                     $("#consumption").text(`${consumption.consumption} ${consumption.unit}`);
                     if (production !== null && consumption !== null) {
                         net = {val: production.val - consumption.consumption, unit: 'kW'};
-                        console.log('prod: ' + consumption.consumption);
                         $("#net").text(`${net.val} ${net.unit}`);
                     }
                 });
@@ -72,13 +88,11 @@
                 $.get("../data/price", (data, status) => {
                     price = data;
                     $("#price").text(`${price.price} ${price.unit}`);
-                });
-                      
+                });  
             }
 
-            
             update();
-            setInterval(update, 1000);
+            setInterval(update, 5 * 1000);
         </script>
 
 
