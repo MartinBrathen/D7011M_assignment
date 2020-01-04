@@ -12,3 +12,5 @@
 |19-12-03|240|login with mongodb|
 |19-12-11|120|display and update picture of house|
 |19-12-12|10|worked on report|
+|20-01-04|30|Fixed net consumption|
+|20-01-04|240|User can now set coordinates for windspeed calc|
