@@ -14,3 +14,5 @@
 |19-12-12|10|worked on report|
 |20-01-04|30|Fixed net consumption|
 |20-01-04|240|User can now set coordinates for windspeed calc|
+|20-01-05|180|Planning|
+|20-01-05|20|Fixed better random generation of consumption|
