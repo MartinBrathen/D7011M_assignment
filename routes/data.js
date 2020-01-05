@@ -89,17 +89,20 @@ function getWindSpeed(long, lat, date){
 
     //scale changes size of windy areas, higher scale makes winds more localized
     var scale = 400;
-    var timeScale = 1/8640000;
-    var offset = date.getTime() * timeScale;
+    
+    //var timeScale = 1/8640000;
+    var timeScale = 1/10000;
+    var offset = date.getTime() % 100000 * timeScale;
+    
 
     //assume earth is sphere
     //https://stackoverflow.com/questions/1185408/converting-from-longitude-latitude-to-cartesian-coordinates
     var x = Math.cos(long/180*Math.PI) * Math.cos(lat/180*Math.PI);
     var y = Math.sin(long/180*Math.PI) * Math.cos(lat/180*Math.PI);
     var z = Math.sin(lat/180*Math.PI);
-
+    console.log(x*scale + offset);
     var val = noise.GetNoise(x*scale + offset, y*scale + offset, z*scale + offset); //returns windspeed on range [-1, 1]
-
+    console.log(val);
     //map to realistic number
     val = (val + 1); // [0, 2]
     val = val * 5.26; // [0, 10.52] m/s
