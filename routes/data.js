@@ -7,7 +7,7 @@ const fastnoise = require('fastnoisejs');
 const noise = fastnoise.Create(1337);
 noise.SetNoiseType(fastnoise.Simplex);
 
-
+var consCycle = 3.14/2;
 
 router.get('/', (req, res) => {
     res.send('/weather or /price');
@@ -157,7 +157,8 @@ function getTotalConsumption(nrOfConsumers = 1000) {
  * returns int
  */
 function getConsumption() {
-    return randomG(3) * 2;
+    consCycle += randomG(3) * 0.0005;
+    return (Math.cos(consCycle) + 1);
 }
 
 function randomG(v){ 
