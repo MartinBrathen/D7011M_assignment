@@ -13,4 +13,5 @@
 |19-12-02|220|login logout register|
 |19-12-03|110|local mongo|
 |19-12-04|140|dashboard psudo production|
+|19-12-11|130|edit profile page|
 
