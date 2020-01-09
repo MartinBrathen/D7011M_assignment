@@ -114,13 +114,42 @@ app.get('/logout', checkAuthenticated, (req, res) => {
     res.redirect('/login');
 });
 
-app.get('/profile/edit', userNameTest, (req, res) => {
+
+
+
+app.get('/profile/edit', checkAuthenticated, userNameTest, (req, res) => {
     res.render('edit_profile');
 });
 
-app.post('/profile/edit', (req, res) => {
-    res.json(req.body);
+app.post('/profile/edit', checkAuthenticated, (req, res) => {
+    
+    
+    user.findById(req.user.id, (err, myUser) => {
+        if (req.body.lat != '') {
+            myUser.latitude = req.body.lat.trim();   
+        }
+
+        if (req.body.long != '') {
+            myUser.longitude = req.body.long.trim();
+        }
+
+        if (req.body.profilepic != '') {
+            myUser.picture = req.body.profilepic.trim();
+        }
+
+        if (req.body.username != '') {
+            myUser.username = req.body.username.trim();
+        }
+        
+        myUser.save((err) => {
+
+        });
+        res.redirect('/dashboard');
+    });
 });
+
+
+
 
 function checkAuthenticated(req, res, next){
     // req.isAuthenticated() is from passport
