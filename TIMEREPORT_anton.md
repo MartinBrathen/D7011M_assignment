@@ -14,4 +14,7 @@
 |19-12-03|110|local mongo|
 |19-12-04|140|dashboard psudo production|
 |19-12-11|130|edit profile page|
+|20-01-09|120|edit profile page|
+|20-01-10|60|delete account|
+
 

@@ -148,7 +148,22 @@ app.post('/profile/edit', checkAuthenticated, (req, res) => {
     });
 });
 
+app.post('/profile/delete', checkAuthenticated, (req, res) => {
+    
+    user.findByIdAndRemove(req.user.id, (err) => {
+        if (err) {
+            console.log(err);
+            return res.redirect('/profile/edit');
+        }
+        console.log("success");
+        return res.redirect('/register');
+    });
+    // user.findById(req.user.id, (err, myUser) => {
+    //     console.log(myUser.id);
+    // });
 
+    
+});
 
 
 function checkAuthenticated(req, res, next){
