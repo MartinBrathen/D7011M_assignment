@@ -11,10 +11,27 @@
         <h1>Edit profile</h1>
         <form action="/profile/edit" method="POST" >
             <label>username</label>
-            <input name="username" type="text" value ="<%= locals.username %>">
+            <input name="username" id="username" type="text" value ="<%= locals.username %>"><br>
+
             <label>profile picture</label>
-            <input name="profile-pic" type="text">
-            <input type="submit" value="Submit">
+            <input name="profilepic" id="profilepic" type="text"><br>
+
+            <label>password</label>
+            <input name="password" id="password" type="password"><br>
+
+            <label>confirm password</label>
+            <input name="confirmpass" id="confirmpass" type="password"><br>
+
+            <label>latitude</label>
+            <input name="lat" id="lat" type="number"><br>
+
+            <label>longitude</label>
+            <input name="long" id="long" type="number"><br>
+
+            <input type="submit" value="Edit data">
+        </form>
+        <form action="/profile/delete" method="POST" onsubmit="return confirm('You are about to delete this account and all data associated to it forever');">
+            <input type="submit" value="Delete account">
         </form>
     </body>
 </html>
