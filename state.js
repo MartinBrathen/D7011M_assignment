@@ -16,10 +16,12 @@ noise.SetNoiseType(fastnoise.Simplex);
  * ratio: % sent to the buffer
  */
 var powerplant = {status: "stopped", buffer: 0, production: 0, maxBuffer: 1000, ratio: .5};
-var price;
+
+// electricity price  set by a a manager
+var price = 1;
 
 var prosumers = new Map();
-var excessPower;
+var excessPower = null; // demand
 const k = 0.2;
 var consCycle = 3.14/2;
 
@@ -98,6 +100,19 @@ var getProsumerConsumption = function(id) {
     return prosumers.get(id).consumption;
 }
 
+var getDemand = () => {
+    return excessPower;
+};
+
+var getPrice = () => {
+    return price;
+};
+
+var setPrice = (newPrice) => {
+    price = newPrice;
+};
+
+
 async function initState() {
 
     var tempProsumers = await user.find().select({username: 1, coordinates: 1, overRatio: 1, underRatio: 1});
@@ -169,4 +184,4 @@ function updateState() {
 
 setTimeout(initState);
 
-module.exports = {getWindSpeed, getConsumption, getTotalConsumption, getProsumerWindSpeed, getProsumerConsumption, powerplant};
+module.exports = {getWindSpeed, getConsumption, getTotalConsumption, getProsumerWindSpeed, getProsumerConsumption, powerplant, getDemand, getPrice, setPrice};

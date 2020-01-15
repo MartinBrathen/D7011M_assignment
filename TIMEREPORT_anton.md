@@ -16,5 +16,6 @@
 |19-12-11|130|edit profile page|
 |20-01-09|120|edit profile page|
 |20-01-10|60|delete account|
+|20-01-15|380|manager plant control page|
 
 

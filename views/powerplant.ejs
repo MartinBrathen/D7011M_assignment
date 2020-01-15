@@ -7,35 +7,46 @@
     </head>
     <body>
         <%- include('header'); %>
-        <h1>Powerplant</h1>
-        <div class="item-container">
-            <div class="item">
-                production: <span id="production"></span>
+        <div class="content">
+            <h1>Powerplant</h1>
+            <div class="item-container">
+                <div class="item">
+                    production: <span id="production"></span>
+                </div>
+                <div class="item">
+                    status: <span id="status"></span>
+                </div>
+                <div class="item">
+                    market demand: <span id="demand"></span>
+                </div>
+                <div class="item">
+                    electricity price: <span id="price"></span>
+                </div>
+                <div class="item">
+                    modeled electricity price: <span id="modeledPrice"></span>
+                </div>
+                <div class="item">
+                    buffer: <span id="buffer"></span>
+                </div>
             </div>
-            <div class="item">
-                status: <span id="status"></span>
+            <hr>
+            <div>
+                <p id="input_error"></p>
+                Target production <input type="number" min="0" max="1000" placeholder="0-1000" id="target_production"> kW<br>
+                <button id="start_button">START/UPDATE</button>
+                <button id="stop_button">STOP</button>
             </div>
-            <div class="item">
-                market demand: <span id="demand"></span>
+            <hr>
+            <div>
+                <p>Set a new electricity price</p>
+                <p id="price_input_error"></p>
+                Set price <input type="number" min="0" placeholder="price" id="price_input"> öre/kWh<br>
+                <button id="set_price_button">Set Price</button>
             </div>
-            <div class="item">
-                electricity price: <span id="price"></span>
+            <hr>
+            <div class="profile-pic">
+                <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
             </div>
-            <div class="item">
-                modeled electricity price: <span id="modeledPrice"></span>
-            </div>
-        </div>
-        <p id="input_error"></p>
-        Target production <input type="number" min="0" max="1000" placeholder="0-1000" id="target_production"> kW<br>
-        <button id="start_button">START/UPDATE</button>
-        <button id="stop_button">STOP</button>
-        
-        
-        <div class="profile-pic">
-            <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
-            <form action="/pictureUrl" method="POST">
-                Picture Url:<input type="text" id="picture" name="picture"><br>
-                <button type="submit">Update picture</button>
         </div>
         
 
@@ -43,22 +54,64 @@
 
             const id = "<%= id%>"
 
+            // start, stop, set production of plant
             $("#start_button").click((e) => {
                 let target = $("#target_production")[0].valueAsNumber;
-                if (!isNaN(target)) {
+                if (!isNaN(target) && target >= 0 && target <= 1000) {
                     $.post("../data/powerplant/update", {target: target}, (e) => {
                         console.log(e);
+                        if (e.status) {
+                            $("#status").text(`${e.status}`);
+                        }
                     });
-                }else{
-                    $("#input_error").text("please enter a number");
                 }
             });
 
             $("#stop_button").click((e) => {
                 $.post("../data/powerplant/update", {target: 0}, (e) => {
                     console.log(e);
+                   
                 });
             });
+
+            $("#target_production").on('input', (e) => {
+                let target = $("#target_production")[0].valueAsNumber;
+
+                if (target < 0){
+                    $("#input_error").text("number is to small");
+                }else if (isNaN(target)){
+                    $("#input_error").text("please enter a number");
+                }else if (target > 1000){
+                    $("#input_error").text("number is to large");
+                }else{
+                    $("#input_error").text("");
+                }
+            });
+
+            // price input
+            $("#price_input").on('input', (e) => {
+                let target = $("#price_input")[0].valueAsNumber;
+
+                if (isNaN(target)){
+                    $("#price_input_error").text("please enter a number");
+                }else{
+                    $("#price_input_error").text("");
+                }
+            });
+
+            $("#set_price_button").click((e) => {
+                let price = $("#price_input")[0].valueAsNumber;
+                if (!isNaN(price)) {
+                    $.post("../data/price", {price: price}, (e) => {
+                        console.log(e);
+                        if (e.price) {
+                            $("#price").text(`${e.price} ${e.unit}`);
+                        }
+                    });
+                }
+            });
+
+
 
             
             var price = null;
@@ -66,6 +119,7 @@
             var status = null;
             var demand = null;
             var modeledPrice = null;
+            var buffer = null;
             
 
             function update() {
@@ -75,14 +129,24 @@
                     $("#status").text(`${status.status}`);
                 });  
 
-                $.get("../data/price", (data, status) => {
+                $.get("../data/model/price", (data, status) => {
                     modeledPrice = data;
                     $("#modeledPrice").text(`${modeledPrice.price} ${modeledPrice.unit}`);
+                }); 
+                
+                $.get("../data/price", (data, status) => {
+                    price = data;
+                    $("#price").text(`${price.price} ${price.unit}`);
                 });  
+
+                $.get("../data/demand", (data, status) => {
+                    demand = data;
+                    $("#demand").text(`${demand.val} ${demand.unit}`);
+                }); 
 
                 $.get("../data/powerplant/production", (data, status) => {
                     production = data;
-                    $("#production").text(`${production.production}`);
+                    $("#production").text(`${production.production} ${production.unit}`);
                 }); 
             }
 
