@@ -10,6 +10,13 @@ const noise = fastnoise.Create(1337);
 noise.SetNoiseType(fastnoise.Simplex);
 
 // state
+/**
+ * powerplant
+ * status: stopped|running|starting
+ * ratio: % sent to the buffer
+ */
+var powerplant = {status: "stopped", buffer: 0, production: 0, maxBuffer: 1000, ratio: .5};
+var price;
 
 var prosumers = new Map();
 var excessPower;
@@ -162,4 +169,4 @@ function updateState() {
 
 setTimeout(initState);
 
-module.exports = {getWindSpeed, getConsumption, getTotalConsumption, getProsumerWindSpeed, getProsumerConsumption};
+module.exports = {getWindSpeed, getConsumption, getTotalConsumption, getProsumerWindSpeed, getProsumerConsumption, powerplant};

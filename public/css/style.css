@@ -24,7 +24,9 @@ header {
     border: 2px solid black;
 }
 
-
+select {
+    font-size: 30px;
+}
 
 .meter{
     width: 200px;

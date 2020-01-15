@@ -116,4 +116,33 @@ router.get('/consumption/total', (req, res) => {
     });
 });
 
+router.get('/powerplant/status', (req, res) => {
+    res.json({status: state.powerplant.status});
+});
+
+router.get('/powerplant/production', (req, res) => {
+    res.json({production: state.powerplant.production});
+});
+
+
+// anyones can change this with a post request
+// TODO: check so only a manager can do this
+router.post('/powerplant/update', (req, res) => {
+    let target = req.body.target;
+    if (state.powerplant.status == "stopped" && target > 0) {
+        state.powerplant.status = "starting";
+    }
+
+    setTimeout(() => {
+        state.powerplant.production = target;
+        if (target > 0) {
+            state.powerplant.status = "running";
+        }else if (target == 0) {
+            state.powerplant.status = "stopped";
+        }
+    }, 30000);
+
+    res.json({status: state.powerplant.status});
+});
+
 module.exports = router;

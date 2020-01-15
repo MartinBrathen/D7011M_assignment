@@ -25,12 +25,11 @@
                 modeled electricity price: <span id="modeledPrice"></span>
             </div>
         </div>
-
-        <form id="coordinateForm">
-            Latitude<input type="number" name="lat" value=0>
-            Longitude<input type="number" name="long" value=0>
-            <input type="submit" value="Submit">
-        </form>
+        <p id="input_error"></p>
+        Target production <input type="number" min="0" max="1000" placeholder="0-1000" id="target_production"> kW<br>
+        <button id="start_button">START/UPDATE</button>
+        <button id="stop_button">STOP</button>
+        
         
         <div class="profile-pic">
             <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
@@ -44,11 +43,21 @@
 
             const id = "<%= id%>"
 
-            $("#coordinateForm").submit((e)=>{
-                e.preventDefault();
-                console.log(e.target[0].value);
-                lat = e.target[0].value;
-                long = e.target[1].value;
+            $("#start_button").click((e) => {
+                let target = $("#target_production")[0].valueAsNumber;
+                if (!isNaN(target)) {
+                    $.post("../data/powerplant/update", {target: target}, (e) => {
+                        console.log(e);
+                    });
+                }else{
+                    $("#input_error").text("please enter a number");
+                }
+            });
+
+            $("#stop_button").click((e) => {
+                $.post("../data/powerplant/update", {target: 0}, (e) => {
+                    console.log(e);
+                });
             });
 
             
@@ -61,102 +70,28 @@
 
             function update() {
                 
-
-                // $.get("../data/weather/" + id, (data, status) => {            
-                //     weather = data;
-                //     $("#wind").text(`${weather.windspeed} ${weather.unit}`);
-
-                //     if (weather !== null){
-                //         production = {val: weather.windspeed * k, unit: 'kW'};
-                //         $("#production").text(`${production.val} ${production.unit}`);
-                //     }
-                // });
-
-                // $.get("../data/consumption", (data, status) => {
-                //     consumption = data;
-                //     $("#consumption").text(`${consumption.consumption} ${consumption.unit}`);
-                //     if (production !== null && consumption !== null) {
-                //         net = {val: production.val - consumption.consumption, unit: 'kW'};
-                //         $("#net").text(`${net.val} ${net.unit}`);
-                //     }
-                // });
+                $.get("../data/powerplant/status", (data, status) => {
+                    status = data;
+                    $("#status").text(`${status.status}`);
+                });  
 
                 $.get("../data/price", (data, status) => {
                     modeledPrice = data;
                     $("#modeledPrice").text(`${modeledPrice.price} ${modeledPrice.unit}`);
                 });  
+
+                $.get("../data/powerplant/production", (data, status) => {
+                    production = data;
+                    $("#production").text(`${production.production}`);
+                }); 
             }
 
             update();
-            setInterval(update, 5 * 1000); // every 5 seconds
+            setInterval(update, 5000); 
         </script>
 
 
 
-        <!--
-        <h2>hello <%= name %></h2>
-        <form action="/" method="POST" id="sendText">
-            <input type="text" id="txt">
-            <button>test</button>
-        </form>
-        <button id="update">update</button></br>
-        consumption:<div class="meter"><span id="consumptionBar" class="bar"></span><span id="consumptionVal"></span></div>
-        <p id="minmaxConsumption"></p>
-
-        wind speed:<div class="meter"><span id="windBar" class="bar"></span><span id="windVal"></span></div>
-        <p id="minmaxWind"></p>
-
-        <script>
-            var maxConsumption = Number.NEGATIVE_INFINITY;
-            var minConsumption = Number.POSITIVE_INFINITY;
-            var maxWind = Number.NEGATIVE_INFINITY;
-            var minWind = Number.POSITIVE_INFINITY;
-
-            function updateConsumption() {
-                $.get("../data/consumption", (data, status) => {
-                    if (data.consumption > maxConsumption) {
-                        maxConsumption = data.consumption;
-                    }else if (data.consumption < minConsumption){
-                        minConsumption = data.consumption;
-                    }
-                    var rel = (data.consumption - minConsumption) / (maxConsumption - minConsumption);
-                    $("#minmaxConsumption").text(minConsumption + ", " + maxConsumption);
-                    $("#consumptionVal").text(data.consumption);
-                    $("#consumptionBar").stop(false, true);
-                    $("#consumptionBar").animate({width: rel * 100 + "%"}, "fast");
-                });
-            }
-
-            function updateWind() {
-                $.get("../data/weather", (data, status) => {
-                    if (data.windspeed > maxWind) {
-                        maxWind = data.windspeed;
-                    }else if (data.windspeed < minWind){
-                        minWind = data.windspeed;
-                    }
-                    var rel = (data.windspeed - minWind) / (maxWind - minWind);
-                    $("#minmaxWind").text(minWind + ", " + maxWind);
-                    $("#windVal").text(data.windspeed);
-                    $("#windBar").stop(false, true); // stop the previous animation to prevent the animation queue from building up
-                    $("#windBar").animate({width: rel * 100 + "%"}, "fast");
-                });
-            }
-
-            // if this is moved to a separate file to clean up, then encase code in : $(document).ready(function(){ code }
-            $("#sendText").submit( (e) =>{
-                e.preventDefault();
-                $("body").css("background", $("#txt").val());
-            });
-
-            $("#update").click(()=>{
-                updateConsumption();
-                updateWind();
-            });
-            updateConsumption();
-            updateWind();
-            setInterval(updateConsumption, 10000);
-            setInterval(updateWind, 10000);
-        </script>
-    -->
+        
     </body>
 </html>
