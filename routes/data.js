@@ -99,6 +99,13 @@ router.get('/consumption/id', (req, res) => {
     });
 });
 
+router.get('/buffer/id', (req, res) => {
+    res.json({
+        consumption : prosumers(req.params.id).buffer,
+        'unit' : 'kW',
+    });
+});
+
 router.get('/consumption/total', (req, res) => {
     var lat = req.params.lat;
     var long = req.params.long;
