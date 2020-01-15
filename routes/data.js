@@ -4,6 +4,12 @@ const router =express.Router();
 
 const fastnoise = require('fastnoisejs');
 
+var mongoose = require('mongoose');
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
+mongoose.connect('mongodb://localhost:27017/prosumer');
+const user = require('../models/user');
+
 const noise = fastnoise.Create(1337);
 noise.SetNoiseType(fastnoise.Simplex);
 
@@ -63,6 +69,13 @@ router.get('/weather/:lat/:long', (req, res) => {
     
     res.json({
         "windspeed" : getWindSpeed(lat, long, new Date()),
+        "unit": "m/s"
+    });
+});
+
+router.get('/weather/:id', (req, res) => {
+    res.json({
+        "windspeed" : prosumers.get(req.params.id).windSpeed,
         "unit": "m/s"
     });
 });
@@ -139,6 +152,13 @@ router.get('/consumption', (req, res) => {
     });
 });
 
+router.get('/consumption/id', (req, res) => {
+    res.json({
+        consumption : prosumers(req.params.id).consumption,
+        'unit' : 'kW',
+    });
+});
+
 router.get('/consumption/total', (req, res) => {
     var lat = req.params.lat;
     var long = req.params.long;
@@ -171,6 +191,82 @@ function randomG(v){
     }
     return r / v;
 }
+
+
+// state
+
+var prosumers = new Map();
+var excessPower;
+const k = 0.2;
+
+async function initState() {
+
+    var tempProsumers = await user.find().select({username: 1, coordinates: 1, overRatio: 1, underRatio: 1});
+
+
+
+    for (var p of tempProsumers) {
+        if (p.coordinates == null) {
+            p.coordinates = {lat: 0.0, long: 0.0};
+        }
+        if (p.overRatio == null) {
+            p.overRatio = 0;
+        }
+        if (p.underRatio == null) {
+            p.underRatio = 0;
+        }
+        if (p.buffer == null) {
+            p.buffer = 0;
+        }
+        prosumers.set(p.id, {username: p.username, coordinates: p.coordinates, overRatio: p.overRatio, underRatio: p.underRatio});
+    }
+
+    setInterval(updateState, 1000);
+}
+
+function updateState() {
+
+    var totalProduction = 0;
+
+    for (var p of prosumers) {
+
+        p = p[1];
+        
+        p.windSpeed = getWindSpeed(p.coordinates.lat, p.coordinates.long, new Date());
+        p.production = p.windSpeed * k;
+        p.consumption = getConsumption();
+
+        var netProduction = p.production - p.consumption;
+        var ratio = netProduction >= 0 ? p.overRatio : p.underRatio;
+
+        if (p.buffer >= netProduction * ratio) {
+            p.buffer += netProduction * ratio;
+            p.outProduction = netProduction * (1 - ratio);
+        } else {
+            p.outProduction = netProduction * (1 - ratio) + p.buffer;
+            p.buffer = 0;
+        }
+        
+        if (p.outProduction >= 0) {
+            totalProduction += p.outProduction;
+        }
+    }
+
+    for (const p of prosumers) {
+        if (p.outProduction < 0) {
+            totalProduction += p.outProduction;
+        }
+        if (totalProduction < 0) {
+            //TODO: report outage
+            console.log('outage: ' + p.username);
+        }
+    }
+
+    excessPower = totalProduction;
+}
+
+
+setTimeout(initState);
 
 
 module.exports = router;

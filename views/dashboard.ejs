@@ -46,6 +46,8 @@
 
         <script>
 
+            const id = "<%= id%>"
+
             $("#coordinateForm").submit((e)=>{
                 e.preventDefault();
                 console.log(e.target[0].value);
@@ -66,7 +68,7 @@
             function update() {
                 
 
-                $.get("../data/weather/" + lat + '/' + long, (data, status) => {            
+                $.get("../data/weather/" + id, (data, status) => {            
                     weather = data;
                     $("#wind").text(`${weather.windspeed} ${weather.unit}`);
 

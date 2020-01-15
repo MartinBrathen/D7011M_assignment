@@ -59,7 +59,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/dashboard', checkAuthenticated, (req, res) => {
-    res.render('dashboard', { title: 'hello there', name: req.user.name,  picture: req.user.picture});
+    res.render('dashboard', { title: 'hello there', id: req.user.id, name: req.user.name, picture: req.user.picture});
 });
 
 app.post('/pictureUrl', checkAuthenticated, (req, res) => {
