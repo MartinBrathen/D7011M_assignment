@@ -156,13 +156,16 @@ app.post('/profile/delete', checkAuthenticated, (req, res) => {
             return res.redirect('/profile/edit');
         }
         console.log("success");
+        req.logout();
         return res.redirect('/register');
     });
     // user.findById(req.user.id, (err, myUser) => {
     //     console.log(myUser.id);
     // });
+});
 
-    
+app.get('/powerplant', (req, res) => {
+    res.render('powerplant.ejs', {title: 'coal = good', id: req.user.id, name: req.user.name, picture: req.user.picture});
 });
 
 

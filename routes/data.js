@@ -86,7 +86,7 @@ router.get('/price', (req, res) => {
     // 48.25 öre/kWh
     var wind = getWindSpeed(0, 0, new Date()); // m/s //avg 5.26
     var consumption = getTotalConsumption(); // kW     //avg 1.25 * totalHouseholds
-    var scalar = 48.25/5.26/1.25;
+    var scalar = 48.25 / 5.26 / 1.25;
     var result = scalar * wind/(consumption + 0.0001); // öre/kWh
     res.json({
         "price" : result,
@@ -157,6 +157,13 @@ router.get('/consumption/id', (req, res) => {
     });
 });
 
+router.get('/buffer/id', (req, res) => {
+    res.json({
+        consumption : prosumers(req.params.id).buffer,
+        'unit' : 'kW',
+    });
+});
+
 router.get('/consumption/total', (req, res) => {
     var lat = req.params.lat;
     var long = req.params.long;
@@ -192,7 +199,6 @@ function randomG(v){
 
 
 // state
-
 var prosumers = new Map();
 var excessPower;
 const k = 0.2;
@@ -259,7 +265,8 @@ function updateState() {
             console.log('outage: ' + p.username);
         }
     }
-
+    
+    // 
     excessPower = totalProduction;
 }
 
