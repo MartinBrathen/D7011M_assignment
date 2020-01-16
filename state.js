@@ -26,6 +26,7 @@ const k = 0.2;
 var consCycle = 3.14/2;
 
 const exposed = {
+    powerplant,
     getWindSpeed(long, lat, date){
         //date is js Date 
         // 1 day = 24h = 1440m = 86400s = 86400000ms
