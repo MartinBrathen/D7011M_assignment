@@ -61,9 +61,9 @@ router.get('/weather/:lat/:long', (req, res) => {
     });
 });
 
-router.get('/weather/:id', (req, res) => {
+router.get('/weather/id', (req, res) => {
     res.json({
-        "windspeed" : state.getProsumerWindSpeed(req.params.id),
+        "windspeed" : state.getProsumerWindSpeed(req.user.id),
         "unit": "m/s"
     });
 });
@@ -94,15 +94,15 @@ router.get('/consumption', (req, res) => {
 
 router.get('/consumption/id', (req, res) => {
     res.json({
-        consumption : state.getProsumerConsumption(req.params.id),
+        consumption : state.getProsumerConsumption(req.user.id),
         'unit' : 'kW',
     });
 });
 
-router.get('/buffer/id', (req, res) => {
+router.get('/buffer', (req, res) => {
     res.json({
-        consumption : prosumers(req.params.id).buffer,
-        'unit' : 'kW',
+        buffer : state.getProsumerBuffer(req.user.id),
+        'unit' : 'kWh',
     });
 });
 
@@ -114,6 +114,16 @@ router.get('/consumption/total', (req, res) => {
         consumption : state.getTotalConsumption(),
         'unit' : 'kW',
     });
+});
+
+router.post('/ratio/', (req, res) =>{
+    console.log(req.body);
+    state.setProsumerRatios(req.user.id, req.body);
+    res.sendStatus(200);
+});
+
+router.get('/ratio', (req, res) => {
+    res.json(state.getProsumerRatios(req.user.id));
 });
 
 module.exports = router;

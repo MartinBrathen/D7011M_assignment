@@ -27,12 +27,18 @@
             <div class="item">
                 price <span id="price"></span>
             </div>
+            <div class="item">
+                Over-production ratio <span id="overRatio"></span>
+            </div>
+            <div class="item">
+                Under-production ratio <span id="underRatio"></span>
+            </div>
             
         </div>
 
-        <form id="coordinateForm">
-            Latitude<input type="number" name="lat" value=0>
-            Longitude<input type="number" name="long" value=0>
+        <form id="ratioForm">
+            Set over-production ratio: <input type="number" name="overRatio" min=0 max=1 step=0.05>
+            Set under-production ratio: <input type="number" name="underRatio" min=0 max=1 step=0.05>
             <input type="submit" value="Submit">
         </form>
         
@@ -48,11 +54,12 @@
 
             const id = "<%= id%>"
 
-            $("#coordinateForm").submit((e)=>{
+            $("#ratioForm").submit((e)=>{
                 e.preventDefault();
-                console.log(e.target[0].value);
-                lat = e.target[0].value;
-                long = e.target[1].value;
+                ratios = {over: e.target[0].value, under: e.target[1].value};
+                $("#overRatio").text(`${ratios.over}`);
+                $("#underRatio").text(`${ratios.under}`);
+                $.post('../data/ratio/', ratios);
             });
 
             var weather = null;
@@ -62,13 +69,12 @@
             var k = .2;
             var production = null;
             var net = null;
-            var lat = 0;
-            var long = 0;
+            var buffer;
+            var ratios;
 
             function update() {
                 
-
-                $.get("../data/weather/" + id, (data, status) => {            
+                $.get("../data/weather/id", (data, status) => {            
                     weather = data;
                     $("#wind").text(`${weather.windspeed} ${weather.unit}`);
 
@@ -90,11 +96,26 @@
                 $.get("../data/price", (data, status) => {
                     price = data;
                     $("#price").text(`${price.price} ${price.unit}`);
-                });  
+                }); 
+
+                $.get("../data/buffer", (data, status) => {
+                    buffer = data;
+                    $("#buffer").text(`${buffer.buffer} ${buffer.unit}`);
+                })
             }
 
-            update();
-            setInterval(update, 5 * 1000);
+            function init() {
+                $.get("../data/ratio", (data, status) => {
+                    ratios = data;
+                    $("#overRatio").text(`${ratios.over}`);
+                    $("#underRatio").text(`${ratios.under}`);
+
+                    setInterval(update, 5 * 1000);
+                })
+                
+            }
+
+            setTimeout(init);
         </script>
 
 

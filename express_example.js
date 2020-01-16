@@ -16,6 +16,8 @@ mongoose.set('useUnifiedTopology', true);
 mongoose.connect('mongodb://localhost:27017/prosumer');
 const user = require('./models/user');
 
+const state = require('./state');
+
 passport.use(new LocalStrategy(user.authenticate()));
 passport.serializeUser(user.serializeUser());
 passport.deserializeUser(user.deserializeUser());
@@ -72,6 +74,11 @@ app.post('/pictureUrl', checkAuthenticated, (req, res) => {
         });
         res.redirect('/dashboard');
     });
+});
+
+app.put('/blockProsumer/:id/:time', checkAuthenticated, (req, res) => {
+    state.blockProsumer(req.params.id, req.params.time);
+    res.sendStatus(200);
 });
 
 app.get('/dbtest', (req, res) => {
