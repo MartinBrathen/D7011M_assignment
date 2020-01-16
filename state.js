@@ -107,6 +107,14 @@ const exposed = {
     setPrice(newPrice){
         price = newPrice;
     },
+
+    getPlantRatio() {
+        return powerplant.ratio;
+    },
+    
+    setPlantRatio(ratio){
+        powerplant.ratio = ratio;
+    },
 }
 
 

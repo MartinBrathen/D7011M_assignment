@@ -44,12 +44,8 @@
         
         <div class="profile-pic">
             <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
-            <form action="/pictureUrl" method="POST">
-                Picture Url:<input type="text" id="picture" name="picture"><br>
-                <button type="submit">Update picture</button>
         </div>
         
-
         <script>
 
             const id = "<%= id%>"
