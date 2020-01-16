@@ -10,9 +10,18 @@ const noise = fastnoise.Create(1337);
 noise.SetNoiseType(fastnoise.Simplex);
 
 // state
+/**
+ * powerplant
+ * status: stopped|running|starting
+ * ratio: % sent to the buffer
+ */
+var powerplant = {status: "stopped", buffer: 0, production: 0, maxBuffer: 1000, ratio: .5};
+
+// electricity price  set by a a manager
+var price = 1;
 
 var prosumers = new Map();
-var excessPower;
+var excessPower = null; // demand
 const k = 0.2;
 var consCycle = 3.14/2;
 
@@ -84,7 +93,19 @@ const exposed = {
     blockProsumer(id, t) {
         prosumers.get(id).blocked = true;
         setTimeout((id) => {prosumers.get(id).blocked = false;}, t, id);
-    }
+    },
+
+    getDemand() {
+        return excessPower;
+    },
+    
+    getPrice() {
+        return price;
+    },
+    
+    setPrice(newPrice){
+        price = newPrice;
+    },
 }
 
 

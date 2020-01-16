@@ -19,12 +19,20 @@ header {
     margin: 10px;
     background: rgb(233, 132, 132);
 }
-
+.content{
+    margin: 20px;
+}
+.content div {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 .profile-pic > img {
     border: 2px solid black;
 }
 
-
+select {
+    font-size: 30px;
+}
 
 .meter{
     width: 200px;

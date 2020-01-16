@@ -61,6 +61,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/dashboard', checkAuthenticated, (req, res) => {
+    if (req.user.manager) {
+        return res.redirect('/powerplant');
+    }
     res.render('dashboard', { title: 'hello there', id: req.user.id, name: req.user.name, picture: req.user.picture});
 });
 
@@ -103,7 +106,6 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
 });
 
 app.post('/register', checkNotAuthenticated, function(req, res, next) {
-    console.log(req.body.name);
     user.register(new user({username: req.body.name}), req.body.password, function(err) {
         if (err) {
             console.log('error: ' , err);
@@ -171,7 +173,7 @@ app.post('/profile/delete', checkAuthenticated, (req, res) => {
     // });
 });
 
-app.get('/powerplant', (req, res) => {
+app.get('/powerplant', checkAuthenticated, checkManager, (req, res) => {
     res.render('powerplant.ejs', {title: 'coal = good', id: req.user.id, name: req.user.name, picture: req.user.picture});
 });
 
@@ -190,6 +192,15 @@ function checkNotAuthenticated(req, res, next){
         return res.redirect('/dashboard');
     }else{
         next();
+    }
+}
+
+function checkManager(req, res, next){
+    // req.isAuthenticated() is from passport
+    if (req.user.manager){
+        next();
+    }else{
+        res.redirect('/login');
     }
 }
 

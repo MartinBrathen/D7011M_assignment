@@ -69,7 +69,7 @@ router.get('/weather/id', (req, res) => {
 });
 
 
-router.get('/price', (req, res) => {
+router.get('/model/price', (req, res) => {
     // 900 kW/month = 1.25kW
     // 48.25 öre/kWh
     var wind = state.getWindSpeed(0, 0, new Date()); // m/s //avg 5.26
@@ -117,13 +117,69 @@ router.get('/consumption/total', (req, res) => {
 });
 
 router.post('/ratio/', (req, res) =>{
-    console.log(req.body);
     state.setProsumerRatios(req.user.id, req.body);
     res.sendStatus(200);
 });
 
 router.get('/ratio', (req, res) => {
     res.json(state.getProsumerRatios(req.user.id));
+});
+
+router.get('/powerplant/status', (req, res) => {
+    res.json({status: state.powerplant.status});
+});
+
+router.get('/powerplant/production', (req, res) => {
+    res.json({production: state.powerplant.production, unit: "kWh"});
+});
+
+
+// anyones can change this with a post request
+// TODO: check so only a manager can do this
+router.post('/powerplant/update', (req, res) => {
+    let target = req.body.target;
+
+    // clamp target to 0:1000
+    if (target < 0){target = 0;}
+    else if (target > 1000){target = 1000;}
+
+    if (state.powerplant.status == "stopped" && target > 0) {
+        state.powerplant.status = "starting";
+    }
+
+    setTimeout(() => {
+        state.powerplant.production = target;
+        if (target > 0) {
+            state.powerplant.status = "running";
+        }else if (target == 0) {
+            state.powerplant.status = "stopped";
+        }
+    }, 30000);
+
+    res.json({status: state.powerplant.status});
+});
+
+router.get('/price', (req, res) => {
+    res.json({
+        price : state.getPrice(),
+        unit : "öre/kWh",
+    });
+});
+
+router.post('/price', (req, res) => {
+    let newPrice = req.body.price;
+    state.setPrice(newPrice);
+    res.json({
+        price : state.getPrice(),
+        unit : "öre/kWh",
+    });
+});
+
+router.get('/demand', (req, res) => {
+    res.json({
+        val : state.getDemand(),
+        unit : "kWh",
+    });
 });
 
 module.exports = router;
