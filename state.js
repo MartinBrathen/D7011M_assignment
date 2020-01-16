@@ -21,9 +21,10 @@ var powerplant = {status: "stopped", buffer: 0, production: 0, maxBuffer: 1000, 
 var price = 1;
 
 var prosumers = new Map();
-var excessPower = null; // demand
+var demand = null;
 const k = 0.2;
 var consCycle = 3.14/2;
+var outages = [];
 
 const exposed = {
     powerplant,
@@ -97,7 +98,7 @@ const exposed = {
     },
 
     getDemand() {
-        return excessPower;
+        return demand;
     },
     
     getPrice() {
@@ -147,6 +148,10 @@ async function initState() {
     var tempProsumers = await user.find().select({username: 1, coordinates: 1, overRatio: 1, underRatio: 1});
 
     for (var p of tempProsumers) {
+        if (p.manager) {
+            continue;
+        }
+
         if (p.coordinates == null) {
             p.coordinates = {lat: 0.0, long: 0.0};
         }
@@ -161,6 +166,7 @@ async function initState() {
         }
         p.bufferSize = 1000;
         p.blocked = false;
+        p.unwantedBufferUsage = 0;
         prosumers.set(p.id, p);
     }
 
@@ -169,7 +175,11 @@ async function initState() {
 
 function updateState() {
 
-    var totalProduction = 0;
+    powerplant.buffer += powerplant.production * powerplant.ratio;
+    var ppBufferUsage = 0;
+    var totalProduction = powerplant.production * (1 - powerplant.ratio);
+    var totalConsumption = 0;
+    outages = [];
 
     for (var p of prosumers) {
 
@@ -202,25 +212,40 @@ function updateState() {
                 p.buffer = 0;
             }
         }
-
-        if (p.outProduction >= 0 && p.blocked == false) {
-            totalProduction += p.outProduction;
+        // if net producer; add to production. else; add to consumption
+        if (p.outProduction >= 0) {
+            totalProduction += !p.blocked ? p.outProduction : 0;
+        } else {
+            totalConsumption -= p.outProduction;
         }
     }
 
-    // check for outage
+    // risk of outage
+    var diff = totalProduction - totalConsumption;
+    if (diff < 0) {
+        let ppBufferUsage = powerplant.buffer >= - diff ? - diff : powerplant.buffer;
+        powerplant.buffer -= ppBufferUsage;
 
-    for (const p of prosumers) {
-        if (p.outProduction < 0) {
-            totalProduction += p.outProduction;
-        }
-        if (totalProduction < 0) {
-            //TODO: report outage. Do not report outage if buffer is enough, also remove p.outProduction in this case
-            console.log('outage: ' + p.username);
+        if (diff + ppBufferUsage < 0) {
+            var possibleOutages = [];
+            // consume from buffer instead of grid
+            for (const p of prosumers) {
+                if (p.outProduction < 0) {
+                    let bufferUsage = p.buffer >= - p.outProduction ? - p.outProduction : p.buffer;
+                    p.buffer -= bufferUsage;
+                    p.outProduction += bufferUsage;
+                    totalConsumption -= bufferUsage;
+                    possibleOutages.push(p.id);
+                }
+            }
         }
     }
-
-    excessPower = totalProduction;
+    
+    // report outages
+    if (totalProduction - totalConsumption + ppBufferUsage < 0) {
+        outages = possibleOutages;
+    }
+    demand = totalProduction - totalConsumption;
 }
 
 
