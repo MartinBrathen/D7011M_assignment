@@ -177,6 +177,20 @@ async function initState() {
 
 function updateState() {
 
+    //POWERPLANT
+    // plantOut - electricity going from the plant to the net, not including the buffer
+    let plantOut = 0;
+    if (powerplant.status == "running"){
+        powerplant.buffer += powerplant.production * powerplant.ratio;
+        plantOut = powerplant.production * (1-powerplant.ratio);
+
+        if (powerplant.buffer > powerplant.maxBuffer) {
+            // powerplant buffer is overfilled
+            // excess energy is voided
+            powerplant.buffer = powerplant.maxBuffer;
+        }
+    }
+
     var totalProduction = 0;
 
     for (var p of prosumers) {
@@ -217,7 +231,7 @@ function updateState() {
     }
 
     // check for outage
-
+    // use the buffer of the powerplant if needed
     for (const p of prosumers) {
         if (p.outProduction < 0) {
             totalProduction += p.outProduction;

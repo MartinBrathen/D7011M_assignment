@@ -11,7 +11,7 @@ header {
 .item-container {
     display: flex;
     flex-direction: column;
-    background: rgb(202, 202, 128);
+    background: rgb(233, 233, 162);
 }
 
 .item {

@@ -196,4 +196,11 @@ router.post('/powerplant/ratio', (req, res) => {
     });
 });
 
+router.get('/powerplant/buffer', (req, res) => {
+    res.json({
+        buffer : state.powerplant.buffer,
+        unit: "kWh"
+    });
+});
+
 module.exports = router;
