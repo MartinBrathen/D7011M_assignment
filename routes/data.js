@@ -130,7 +130,7 @@ router.get('/powerplant/status', (req, res) => {
 });
 
 router.get('/powerplant/production', (req, res) => {
-    res.json({production: state.powerplant.production, unit: "kWh"});
+    res.json({production: state.powerplant.production, unit: "kW"});
 });
 
 
@@ -178,7 +178,28 @@ router.post('/price', (req, res) => {
 router.get('/demand', (req, res) => {
     res.json({
         val : state.getDemand(),
-        unit : "kWh",
+        unit : "kW",
+    });
+});
+
+router.get('/powerplant/ratio', (req, res) => {
+    res.json({
+        ratio : state.getPlantRatio()
+    });
+});
+
+router.post('/powerplant/ratio', (req, res) => {
+    let ratio = req.body.ratio;
+    state.setPlantRatio(ratio);
+    res.json({
+        ratio : ratio,
+    });
+});
+
+router.get('/powerplant/buffer', (req, res) => {
+    res.json({
+        buffer : state.powerplant.buffer,
+        unit: "kWh"
     });
 });
 

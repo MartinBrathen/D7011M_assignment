@@ -108,6 +108,14 @@ const exposed = {
     setPrice(newPrice){
         price = newPrice;
     },
+
+    getPlantRatio() {
+        return powerplant.ratio;
+    },
+    
+    setPlantRatio(ratio){
+        powerplant.ratio = ratio;
+    },
 }
 
 
@@ -175,11 +183,23 @@ async function initState() {
 
 function updateState() {
 
-    powerplant.buffer += powerplant.production * powerplant.ratio;
-    var ppBufferUsage = 0;
-    var totalProduction = powerplant.production * (1 - powerplant.ratio);
+    
+    var totalProduction = 0;
     var totalConsumption = 0;
     outages = [];
+    //POWERPLANT
+    // plantOut - electricity going from the plant to the net, not including the buffer
+    var ppBufferUsage = 0;
+    if (powerplant.status == "running"){
+        powerplant.buffer += powerplant.production * powerplant.ratio;
+        totalProduction = powerplant.production * (1-powerplant.ratio);
+
+        if (powerplant.buffer > powerplant.maxBuffer) {
+            // powerplant buffer is overfilled
+            // excess energy is voided
+            powerplant.buffer = powerplant.maxBuffer;
+        }
+    }
 
     for (var p of prosumers) {
 
