@@ -18,6 +18,8 @@ const user = require('./models/user');
 
 const state = require('./state');
 
+const auth = require('./authentication');
+
 passport.use(new LocalStrategy(user.authenticate()));
 passport.serializeUser(user.serializeUser());
 passport.deserializeUser(user.deserializeUser());
@@ -60,14 +62,14 @@ app.get('/', (req, res) => {
     res.send(req.user);
 });
 
-app.get('/dashboard', checkAuthenticated, (req, res) => {
+app.get('/dashboard', auth.checkAuthenticated, (req, res) => {
     if (req.user.manager) {
         return res.redirect('/powerplant');
     }
     res.render('dashboard', { title: 'hello there', id: req.user.id, name: req.user.name, picture: req.user.picture});
 });
 
-app.post('/pictureUrl', checkAuthenticated, (req, res) => {
+app.post('/pictureUrl', auth.checkAuthenticated, (req, res) => {
 
     user.findById(req.user.id, (err, myUser) => {
 
@@ -79,7 +81,7 @@ app.post('/pictureUrl', checkAuthenticated, (req, res) => {
     });
 });
 
-app.put('/blockProsumer/:id/:time', checkAuthenticated, (req, res) => {
+app.put('/blockProsumer/:id/:time', auth.checkAuthenticated, (req, res) => {
     state.blockProsumer(req.params.id, req.params.time);
     res.sendStatus(200);
 });
@@ -90,22 +92,22 @@ app.get('/dbtest', (req, res) => {
     });
 });
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
+app.get('/login', auth.checkNotAuthenticated, (req, res) => {
     res.render('login.ejs');
 });
 
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+app.post('/login', auth.checkNotAuthenticated, passport.authenticate('local', {
     successRedirect: '/dashboard',
     failureRedirect: '/login',
     failureFlash: true,
 }));
 
 
-app.get('/register', checkNotAuthenticated, (req, res) => {
+app.get('/register', auth.checkNotAuthenticated, (req, res) => {
     res.render('register.ejs')
 });
 
-app.post('/register', checkNotAuthenticated, function(req, res, next) {
+app.post('/register', auth.checkNotAuthenticated, function(req, res, next) {
     user.register(new user({username: req.body.name}), req.body.password, function(err) {
         if (err) {
             console.log('error: ' , err);
@@ -118,7 +120,7 @@ app.post('/register', checkNotAuthenticated, function(req, res, next) {
     });
 });
 
-app.get('/logout', checkAuthenticated, (req, res) => {
+app.get('/logout', auth.checkAuthenticated, (req, res) => {
     req.logOut(); // from passport
     res.redirect('/login');
 });
@@ -126,11 +128,11 @@ app.get('/logout', checkAuthenticated, (req, res) => {
 
 
 
-app.get('/profile/edit', checkAuthenticated, userNameTest, (req, res) => {
+app.get('/profile/edit', auth.checkAuthenticated, auth.userNameTest, (req, res) => {
     res.render('edit_profile');
 });
 
-app.post('/profile/edit', checkAuthenticated, (req, res) => {
+app.post('/profile/edit', auth.checkAuthenticated, (req, res) => {
     
     
     user.findById(req.user.id, (err, myUser) => {
@@ -157,7 +159,7 @@ app.post('/profile/edit', checkAuthenticated, (req, res) => {
     });
 });
 
-app.post('/profile/delete', checkAuthenticated, (req, res) => {
+app.post('/profile/delete', auth.checkAuthenticated, (req, res) => {
     
     user.findByIdAndRemove(req.user.id, (err) => {
         if (err) {
@@ -173,45 +175,9 @@ app.post('/profile/delete', checkAuthenticated, (req, res) => {
     // });
 });
 
-app.get('/powerplant', checkAuthenticated, checkManager, (req, res) => {
+app.get('/powerplant', auth.checkAuthenticated, auth.checkManager, (req, res) => {
     res.render('powerplant.ejs', {title: 'coal = good', id: req.user.id, name: req.user.name, picture: req.user.picture});
 });
-
-
-function checkAuthenticated(req, res, next){
-    // req.isAuthenticated() is from passport
-    if (req.isAuthenticated()){
-        next();
-    }else{
-        res.redirect('/login');
-    }
-}
-
-function checkNotAuthenticated(req, res, next){
-    if (req.isAuthenticated()){
-        return res.redirect('/dashboard');
-    }else{
-        next();
-    }
-}
-
-function checkManager(req, res, next){
-    // req.isAuthenticated() is from passport
-    if (req.user.manager){
-        next();
-    }else{
-        res.redirect('/login');
-    }
-}
-
-function userNameTest(req, res, next) {
-    if (req.isAuthenticated()){
-        res.locals.username = req.user.username;
-    }
-    next();
-}
-
-
 
 var server = app.listen(3000, () => {});
 
