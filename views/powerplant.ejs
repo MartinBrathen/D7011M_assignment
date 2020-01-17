@@ -6,9 +6,18 @@
         <script src="../../socket.io/socket.io.js"></script>
         <script>
             var socket = io.connect('http://localhost:3000');
-            socket.on('news', function (data) {
-              console.log(data);
-              socket.emit('my other event', { my: 'data' });
+            socket.on('msg', function (data) {
+                console.log(data.msg);
+            });
+
+            socket.on('userConnect', function (data) {
+                console.log("connect");
+                console.log(data);
+            });
+
+            socket.on('userDisconnect', function (data) {
+                console.log("disconnect");
+                console.log(data);
             });
           </script>
         <link rel="stylesheet" type="text/css" href="/css/style.css">

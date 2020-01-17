@@ -57,10 +57,8 @@ app.use(express.static(__dirname + '/public'));
 // });
 
 io.on('connection', (socket) => {
-    socket.emit('news', { hello: 'world' });
-    socket.on('my other event', function (data) {
-        console.log(data);
-    });
+    console.log("manager connected");
+    socket.emit('msg', { msg: 'you are connected as a manager' });
 });
 
 app.use('/', (res, req, next) => {
@@ -69,7 +67,7 @@ app.use('/', (res, req, next) => {
 });
 
 app.get('/', (req, res) => {
-    res.json(req.sessionStore.sessions);
+    res.redirect('/login');
 });
 
 app.get('/dashboard', auth.checkAuthenticated, (req, res) => {
@@ -106,11 +104,15 @@ app.get('/login', auth.checkNotAuthenticated, (req, res) => {
     res.render('login.ejs');
 });
 
-app.post('/login', auth.checkNotAuthenticated, passport.authenticate('local', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/login',
-    failureFlash: true,
-}));
+app.post(
+    '/login',
+    auth.checkNotAuthenticated, 
+    passport.authenticate('local', {failureRedirect: '/login',failureFlash: true}), 
+    (req, res) => {
+        io.emit('userConnect', {id: req.user.id, name: req.user.username});
+        res.redirect('/dashboard');
+    }
+);
 
 
 app.get('/register', auth.checkNotAuthenticated, (req, res) => {
@@ -131,6 +133,7 @@ app.post('/register', auth.checkNotAuthenticated, function(req, res, next) {
 });
 
 app.get('/logout', auth.checkAuthenticated, (req, res) => {
+    io.emit('userDisconnect', {id: req.user.id, name: req.user.username});
     req.logOut(); // from passport
     res.redirect('/login');
 });
