@@ -117,7 +117,6 @@ router.get('/ratio/:id', auth.checkAuthenticated, (req, res) => {
 });
 
 router.get('/ratio', auth.checkAuthenticated, (req, res) => {
-    console.log('nooo');
     res.json(state.getProsumerRatios(req.user.id));
 });
 
