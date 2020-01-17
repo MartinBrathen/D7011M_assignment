@@ -134,15 +134,16 @@ app.post('/register', auth.checkNotAuthenticated, function(req, res, next) {
             console.log('error: ' , err);
             req.flash('error', err.message);
             
-            return res.redirect("/register")
+            res.redirect("/register");
+        }else{
+            io.emit('userRegister', {id: myUser.id, username: myUser.username});
+            state.registerProsumer({id: myUser.id, username: myUser.username, latitude: myUser.latitude, longitude: myUser.longitude, manager: myUser.manager});
+            res.redirect('/login');
         }
-        io.emit('userRegister', {id: myUser.id, username: myUser.username});
-        state.registerProsumer({id: myUser.id, username: myUser.username, latitude: myUser.latitude, longitude: myUser.longitude, manager: myUser.manager});
-        
     });
 
     
-    res.redirect('/login');
+    
 });
 
 app.get('/logout', auth.checkAuthenticated, (req, res) => {

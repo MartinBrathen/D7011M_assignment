@@ -217,7 +217,7 @@
 
                 $.get("../data/model/price", (data, status) => {
                     modeledPrice = data;
-                    $("#modeledPrice").text(`${modeledPrice.price} ${modeledPrice.unit}`);
+                    $("#modeledPrice").text(`${ Math.round( modeledPrice.price  * 1000 + Number.EPSILON ) / 1000} ${modeledPrice.unit}`);
                 }); 
                 
                 $.get("../data/price", (data, status) => {
@@ -227,12 +227,12 @@
 
                 $.get("../data/demand", (data, status) => {
                     demand = data;
-                    $("#demand").text(`${demand.val} ${demand.unit}`);
+                    $("#demand").text(`${ Math.round( demand.val  * 1000 + Number.EPSILON ) / 1000} ${demand.unit}`);
                 }); 
 
                 $.get("../data/powerplant/production", (data, status) => {
                     production = data;
-                    $("#production").text(`${production.production} ${production.unit}`);
+                    $("#production").text(`${production.production } ${production.unit}`);
                 }); 
 
                 $.get("../data/powerplant/ratio", (data, status) => {
@@ -242,7 +242,7 @@
 
                 $.get("../data/powerplant/buffer", (data, status) => {
                     buffer = data;
-                    $("#buffer").text(`${buffer.buffer} ${buffer.unit}`);
+                    $("#buffer").text(`${ Math.round( buffer.buffer   * 1000 + Number.EPSILON ) / 1000} ${buffer.unit}`);
                 });
 
                 $.get("../data/outages", (data, status) => {

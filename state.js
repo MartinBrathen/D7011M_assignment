@@ -265,7 +265,7 @@ function updateState() {
         // netProduction - internal
         // outProductin - external (buffer accounted for)
         p = p[1];
-        console.log(p);
+        
         p.windSpeed = exposed.getWindSpeed(p.latitude, p.longitude, new Date());
 
         p.production = p.windSpeed * k;
