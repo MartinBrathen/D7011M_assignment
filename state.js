@@ -174,7 +174,6 @@ async function initState() {
         }
         p.bufferSize = 1000;
         p.blocked = false;
-        p.unwantedBufferUsage = 0;
         prosumers.set(p.id, p);
     }
 
