@@ -89,7 +89,7 @@
                 <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';">
             </div>
 
-            <div class='item-container'>
+            <!-- <div class='item-container'>
                 <ul>
                 <% for (var i = 0; i < prosumers.length; i++) { %>
                     <li class="item" id="<%= prosumers[i].id %>"><a href='/dashboard/:<%= prosumers[i].id %>'><%= prosumers[i].username %></a>
@@ -97,6 +97,24 @@
                         Outage: <span class='outage'>No.</span></li>
                 <% } %>
                 </ul>
+            </div> -->
+            <div>
+                <table>
+                    <tr>
+                        <th>Name</th><th>Status</th><th>Blacked</th><th>Delete User</th>
+                    </tr>
+                    <% for (var i = 0; i < prosumers.length; i++) { %>
+                        <tr id="<%= prosumers[i].id %>">
+                            <td> <a href='/dashboard/:<%= prosumers[i].id %>'><%= prosumers[i].username %></a> </td>
+                            <% if (prosumers[i].online) { %>
+                                <td style="color:green">ONLINE</td>
+                            <% }else{ %>
+                                <td style="color:red">OFFLINE</td>
+                            <% } %>
+                            <td>Outage: <span class='outage'>No.</span></td>
+                        </tr>
+                    <% } %>
+                </table>
             </div>
         </div>
         
