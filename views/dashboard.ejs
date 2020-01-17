@@ -37,10 +37,9 @@
         
         <script>
 
-            const id = "<%= id%>"
-            const manager = "<%= manager%>"
-            console.log(manager);
-            if (manager == false) {
+            const id = '<%= id%>'
+            const manager = <%= manager%>;
+            if (manager == 'false') {
                 console.log('manager! wtf');
             }
 
@@ -63,7 +62,7 @@
             var ratios;
 
             function update() {
-                $.get("../data/weather", (data, status) => {
+                $.get(manager ? "../data/weather/" + id : "../data/weather", (data, status) => {
                     weather = data;
                     $("#wind").text(`${weather.windspeed} ${weather.unit}`);
 
@@ -72,7 +71,7 @@
                         $("#production").text(`${production.val} ${production.unit}`);
                     }
                 });
-                $.get("../data/consumption", (data, status) => {
+                $.get(manager ? "../data/consumption/" + id : "../data/consumption", (data, status) => {
                     consumption = data;
                     $("#consumption").text(`${consumption.consumption} ${consumption.unit}`);
                     if (production !== null && consumption !== null) {
@@ -86,14 +85,14 @@
                     $("#price").text(`${price.price} ${price.unit}`);
                 });
 
-                $.get("../data/buffer", (data, status) => {
+                $.get(manager ? "../data/buffer/" + id : "../data/buffer", (data, status) => {
                     buffer = data;
                     $("#buffer").text(`${buffer.buffer} ${buffer.unit}`);
                 });
             }
 
             function init() {
-                $.get("../data/ratio", (data, status) => {
+                $.get(manager ? "../data/ratio/" + id : "../data/ratio", (data, status) => {
                     ratios = data;
                     $("#overRatio").text(`${ratios.over}`);
                     $("#underRatio").text(`${ratios.under}`);
