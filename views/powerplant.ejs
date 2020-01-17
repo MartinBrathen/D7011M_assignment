@@ -77,12 +77,19 @@
             <div class="profile-pic">
                 <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
             </div>
+
+            <div class='item-container'>
+                <%= prosumers %>
+            </div>
         </div>
         
 
         <script>
 
-            const id = "<%= id%>"
+            const id = "<%= id%>";
+
+            const prosumers = "<%= prosumers%>";
+            console.log(prosumers);
 
             // start, stop, set production of plant
             $("#start_button").click((e) => {

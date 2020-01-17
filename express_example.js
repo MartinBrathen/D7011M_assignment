@@ -189,7 +189,8 @@ app.post('/profile/delete', auth.checkAuthenticated, (req, res) => {
 });
 
 app.get('/powerplant', auth.checkAuthenticated, auth.checkManager, (req, res) => {
-    res.render('powerplant.ejs', {title: 'coal = good', id: req.user.id, name: req.user.name, picture: req.user.picture});
+    console.log(state.getProsumers());
+    res.render('powerplant.ejs', {title: 'coal = good', id: req.user.id, name: req.user.name, picture: req.user.picture, prosumers: state.getProsumers()});
 });
 
 server.listen(3000, () => {});

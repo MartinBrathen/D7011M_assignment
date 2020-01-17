@@ -6,6 +6,8 @@ mongoose.set('useUnifiedTopology', true);
 mongoose.connect('mongodb://localhost:27017/prosumer');
 const user = require('./models/user');
 
+const server = require('./express_example');
+
 const noise = fastnoise.Create(1337);
 noise.SetNoiseType(fastnoise.Simplex);
 
@@ -113,6 +115,10 @@ const exposed = {
     
     setPlantRatio(ratio){
         powerplant.ratio = ratio;
+    },
+
+    getProsumers() {
+        return Array.from(prosumers.values());
     },
 }
 
