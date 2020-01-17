@@ -159,6 +159,10 @@ const exposed = {
 
     deleteProsumerById(id) {
         prosumers.delete(id);
+    },
+
+    registerProsumer(p) {
+        initProsumer(p);
     }
 }
 
@@ -200,32 +204,36 @@ async function initState() {
     var tempProsumers = await user.find().select({username: 1, latitude: 1, longitude: 1, overRatio: 1, underRatio: 1, manager: 1, picture: 1});
 
     for (var p of tempProsumers) {
-        if (p.manager) {
-            continue;
-        }
-
-        if (p.latitude == null) {
-            p.latitude = 0.0;
-        }
-        if (p.longitude == null) {
-            p.longitude = 0.0;
-        }
-        if (p.overRatio == null) {
-            p.overRatio = 0;
-        }
-        if (p.underRatio == null) {
-            p.underRatio = 0;
-        }
-        if (p.buffer == null) {
-            p.buffer = 0;
-        }
-        p.bufferSize = 1000;
-        p.blocked = false;
-        p.online = false;
-        prosumers.set(p.id, p);
+        initProsumer(p);
     }
 
     setInterval(updateState, 1000);
+}
+
+function initProsumer(p) {
+    if (p.manager) {
+        continue;
+    }
+
+    if (p.latitude == null) {
+        p.latitude = 0.0;
+    }
+    if (p.longitude == null) {
+        p.longitude = 0.0;
+    }
+    if (p.overRatio == null) {
+        p.overRatio = 0;
+    }
+    if (p.underRatio == null) {
+        p.underRatio = 0;
+    }
+    if (p.buffer == null) {
+        p.buffer = 0;
+    }
+    p.bufferSize = 1000;
+    p.blocked = false;
+    p.online = false;
+    prosumers.set(p.id, p);
 }
 
 function updateState() {
