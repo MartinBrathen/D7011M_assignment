@@ -75,7 +75,7 @@
             <div>
                 <table>
                     <tr>
-                        <th>Name</th><th>Status</th><th>Blacked</th><th>Delete User</th>
+                        <th>Name</th><th>Status</th><th>Blacked</th><th>Delete User</th><th>block for x seconds</th>
                     </tr>
                     <% for (var i = 0; i < prosumers.length; i++) { %>
                         <tr id="<%= prosumers[i].id %>">
@@ -170,6 +170,13 @@
                 ratio = {ratio: e.target[0].value};
                 $("#ratio").text(`${ratio.ratio}`);
                 $.post('../data/powerplant/ratio', ratio);
+            });
+
+            $(".blockuser").submit((e)=>{
+                e.preventDefault();
+                let time = e.target[0].valueAsNumber;
+                let id = e.target.parentElement.parentElement.id;
+                $.post('../blockProsumer', {time: time, id: id});
             });
 
 

@@ -94,8 +94,11 @@ app.post('/pictureUrl', auth.checkAuthenticated, (req, res) => {
     });
 });
 
-app.put('/blockProsumer/:id/:time', auth.checkAuthenticated, (req, res) => {
-    state.blockProsumer(req.params.id, req.params.time);
+app.post('/blockProsumer', auth.checkAuthenticated, (req, res) => {
+    console.log(req.body.time + ", " + req.body.id);
+    if (req.body.time >= 10 && req.body.time <= 100) {
+        state.blockProsumer(req.body.id, req.body.time); 
+    }
     res.sendStatus(200);
 });
 

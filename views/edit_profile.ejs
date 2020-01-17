@@ -7,34 +7,32 @@
     </head>
     <body>
         <%- include('header'); %>
-        
-        <h1>Edit profile</h1>
-        <% if (messages.error) { %>
-            <%= messages.error %>
-        <% } %>
-        <form action="/profile/edit" method="POST" >
-            <label>username</label>
-            <input name="username" id="username" type="text" value ="<%= locals.username %>"><br>
+        <div class="content">
+            <h1>Edit profile</h1>
+            <% if (messages.error) { %>
+                <%= messages.error %>
+            <% } %>
+            <form action="/profile/edit" method="POST" >
+                
+                <input name="username" id="username" type="text" value ="<%= locals.username %>" placeholder="username"><br>
 
-            <label>profile picture</label>
-            <input name="profilepic" id="profilepic" type="text"><br>
+                <input name="profilepic" id="profilepic" type="text" placeholder="profile picture url"><br>
 
-            <label>password</label>
-            <input name="password" id="password" type="password"><br>
+                <!-- <label>password</label>
+                <input name="password" id="password" type="password" placeholder=""><br>
 
-            <label>confirm password</label>
-            <input name="confirmpass" id="confirmpass" type="password"><br>
+                <label>confirm password</label>
+                <input name="confirmpass" id="confirmpass" type="password" placeholder=""><br> -->
 
-            <label>latitude</label>
-            <input name="lat" id="lat" type="number"><br>
+                <input name="lat" id="lat" type="number" placeholder="latitude"><br>
 
-            <label>longitude</label>
-            <input name="long" id="long" type="number"><br>
+                <input name="long" id="long" type="number" placeholder="longitude"><br>
 
-            <input type="submit" value="Edit data">
-        </form>
-        <form action="/profile/delete" method="POST" onsubmit="return confirm('You are about to delete this account and all data associated to it forever');">
-            <input type="submit" value="Delete account">
-        </form>
+                <input type="submit" value="Edit data">
+            </form>
+            <form action="/profile/delete" method="POST" onsubmit="return confirm('You are about to delete this account and all data associated to it forever');">
+                <input type="submit" value="Delete account">
+            </form>
+        </div>
     </body>
 </html>
