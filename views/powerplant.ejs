@@ -105,7 +105,6 @@
 
             const id = "<%= id%>";
 
-
             // start, stop, set production of plant
             $("#start_button").click((e) => {
                 let target = $("#target_production")[0].valueAsNumber;
@@ -217,7 +216,15 @@
                 $.get("../data/powerplant/buffer", (data, status) => {
                     buffer = data;
                     $("#buffer").text(`${buffer.buffer} ${buffer.unit}`);
-                }); 
+                });
+
+                $.get("../data/outages", (data, status) => {
+                    $('.outage').text('No');
+                    const outages = data.outages;
+                    for (let p of outages) {
+                        $('#' + p).find('.outage').text('yes');
+                    }
+                });
             }
 
             update();

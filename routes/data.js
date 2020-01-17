@@ -104,7 +104,7 @@ router.get('/powerplant/production', auth.checkAuthenticated, (req, res) => {
 });
 
 router.get('/outages', auth.checkAuthenticated, (req, res) => {
-    res.json({outages: state.outages});
+    res.json({outages: state.getOutages()});
 });
 
 router.post('/powerplant/update', auth.checkManager, (req, res) => {
