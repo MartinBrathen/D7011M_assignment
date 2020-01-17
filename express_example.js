@@ -70,11 +70,15 @@ app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
+app.get('/dashboard/:id', auth.checkAuthenticated, auth.checkManager, (req, res) => {
+    res.render('dashboard', { title: 'hello there', id: req.params.id, name: req.user.name, picture: req.user.picture, manager: true});
+});
+
 app.get('/dashboard', auth.checkAuthenticated, (req, res) => {
     if (req.user.manager) {
         return res.redirect('/powerplant');
     }
-    res.render('dashboard', { title: 'hello there', id: req.user.id, name: req.user.name, picture: req.user.picture});
+    res.render('dashboard', { title: 'hello there', id: req.user.id, name: req.user.name, picture: req.user.picture, manager: false});
 });
 
 app.post('/pictureUrl', auth.checkAuthenticated, (req, res) => {

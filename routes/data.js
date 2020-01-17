@@ -51,6 +51,13 @@ router.get('/weather/:lat/:long', (req, res) => {
     });
 });
 
+router.get('/weather/:id', auth.checkAuthenticated, auth.checkManager, (req, res) => {
+    res.json({
+        "windspeed" : state.getProsumerWindSpeed(req.params.id),
+        "unit": "m/s"
+    });
+});
+
 router.get('/weather', auth.checkAuthenticated, (req, res) => {
     res.json({
         "windspeed" : state.getProsumerWindSpeed(req.user.id),
@@ -72,10 +79,24 @@ router.get('/model/price', auth.checkAuthenticated, (req, res) => {
     });
 });
 
+router.get('/consumption/:id', auth.checkAuthenticated, auth.checkManager, (req, res) => {
+    res.json({
+        consumption : state.getProsumerConsumption(req.params.id),
+        'unit' : 'kW',
+    });
+});
+
 router.get('/consumption', auth.checkAuthenticated, (req, res) => {
     res.json({
         consumption : state.getProsumerConsumption(req.user.id),
         'unit' : 'kW',
+    });
+});
+
+router.get('/buffer/:id', auth.checkAuthenticated, auth.checkManager, (req, res) => {
+    res.json({
+        buffer : state.getProsumerBuffer(req.params.id),
+        'unit' : 'kWh',
     });
 });
 
@@ -91,7 +112,12 @@ router.post('/ratio', auth.checkAuthenticated, (req, res) =>{
     res.sendStatus(200);
 });
 
+router.get('/ratio/:id', auth.checkAuthenticated, (req, res) => {
+    res.json(state.getProsumerRatios(req.params.id));
+});
+
 router.get('/ratio', auth.checkAuthenticated, (req, res) => {
+    console.log('nooo');
     res.json(state.getProsumerRatios(req.user.id));
 });
 

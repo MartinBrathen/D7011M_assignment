@@ -49,6 +49,10 @@
         <script>
 
             const id = "<%= id%>"
+            const manager = "<%= manager%>"
+
+            console.log('manager: ' + manager);
+            console.log('id: ' + id);
 
             $("#ratioForm").submit((e)=>{
                 e.preventDefault();
@@ -69,8 +73,8 @@
             var ratios;
 
             function update() {
-                
-                $.get("../data/weather", (data, status) => { 
+                var url = manager ? "../data/weather/" + id : "../data/weather";
+                $.get(url, (data, status) => {
                     weather = data;
                     $("#wind").text(`${weather.windspeed} ${weather.unit}`);
 
@@ -79,8 +83,8 @@
                         $("#production").text(`${production.val} ${production.unit}`);
                     }
                 });
-
-                $.get("../data/consumption", (data, status) => {
+                url = manager ? "../data/consumption/" + id : "../data/consumption";
+                $.get(url, (data, status) => {
                     consumption = data;
                     $("#consumption").text(`${consumption.consumption} ${consumption.unit}`);
                     if (production !== null && consumption !== null) {
@@ -93,15 +97,15 @@
                     price = data;
                     $("#price").text(`${price.price} ${price.unit}`);
                 }); 
-
-                $.get("../data/buffer", (data, status) => {
+                url = manager ? "../data/buffer/" + id : "../data/buffer";
+                $.get(manager ? "../data/buffer/" + id : "../data/buffer", (data, status) => {
                     buffer = data;
                     $("#buffer").text(`${buffer.buffer} ${buffer.unit}`);
                 });
             }
 
             function init() {
-                $.get("../data/ratio", (data, status) => {
+                $.get(manager ? "../data/ratio/" + id : "../data/ratio", (data, status) => {
                     ratios = data;
                     $("#overRatio").text(`${ratios.over}`);
                     $("#underRatio").text(`${ratios.under}`);
