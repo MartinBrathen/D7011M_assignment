@@ -1,6 +1,6 @@
 const express = require('express');
 const state = require('../state.js');
-
+const auth = require('../authentication.js');
 const router = express.Router();
 
 router.get('/', (req, res) => {
@@ -51,7 +51,7 @@ router.get('/weather/:lat/:long', (req, res) => {
     });
 });
 
-router.get('/weather', (req, res) => {
+router.get('/weather', auth.checkAuthenticated, (req, res) => {
     res.json({
         "windspeed" : state.getProsumerWindSpeed(req.user.id),
         "unit": "m/s"
@@ -59,7 +59,7 @@ router.get('/weather', (req, res) => {
 });
 
 
-router.get('/model/price', (req, res) => {
+router.get('/model/price', auth.checkAuthenticated, (req, res) => {
     // 900 kW/month = 1.25kW
     // 48.25 öre/kWh
     var wind = state.getWindSpeed(0, 0, new Date()); // m/s //avg 5.26
@@ -72,36 +72,26 @@ router.get('/model/price', (req, res) => {
     });
 });
 
-router.get('/consumption', (req, res) => {
+router.get('/consumption', auth.checkAuthenticated, (req, res) => {
     res.json({
         consumption : state.getProsumerConsumption(req.user.id),
         'unit' : 'kW',
     });
 });
 
-router.get('/buffer', (req, res) => {
+router.get('/buffer', auth.checkAuthenticated, (req, res) => {
     res.json({
         buffer : state.getProsumerBuffer(req.user.id),
         'unit' : 'kWh',
     });
 });
 
-router.get('/consumption/total', (req, res) => {
-    var lat = req.params.lat;
-    var long = req.params.long;
-    
-    res.json({
-        consumption : state.getTotalConsumption(),
-        'unit' : 'kW',
-    });
-});
-
-router.post('/ratio/', (req, res) =>{
+router.post('/ratio', auth.checkAuthenticated, (req, res) =>{
     state.setProsumerRatios(req.user.id, req.body);
     res.sendStatus(200);
 });
 
-router.get('/ratio', (req, res) => {
+router.get('/ratio', auth.checkAuthenticated, (req, res) => {
     res.json(state.getProsumerRatios(req.user.id));
 });
 
@@ -109,14 +99,11 @@ router.get('/powerplant/status', (req, res) => {
     res.json({status: state.powerplant.status});
 });
 
-router.get('/powerplant/production', (req, res) => {
+router.get('/powerplant/production', auth.checkAuthenticated, (req, res) => {
     res.json({production: state.powerplant.production, unit: "kW"});
 });
 
-
-// anyones can change this with a post request
-// TODO: check so only a manager can do this
-router.post('/powerplant/update', (req, res) => {
+router.post('/powerplant/update', auth.checkManager, (req, res) => {
     let target = req.body.target;
 
     // clamp target to 0:1000
@@ -146,7 +133,7 @@ router.get('/price', (req, res) => {
     });
 });
 
-router.post('/price', (req, res) => {
+router.post('/price', auth.checkManager, (req, res) => {
     let newPrice = req.body.price;
     state.setPrice(newPrice);
     res.json({
@@ -162,13 +149,13 @@ router.get('/demand', (req, res) => {
     });
 });
 
-router.get('/powerplant/ratio', (req, res) => {
+router.get('/powerplant/ratio', auth.checkManager, (req, res) => {
     res.json({
         ratio : state.getPlantRatio()
     });
 });
 
-router.post('/powerplant/ratio', (req, res) => {
+router.post('/powerplant/ratio', auth.checkManager, (req, res) => {
     let ratio = req.body.ratio;
     state.setPlantRatio(ratio);
     res.json({
@@ -176,7 +163,7 @@ router.post('/powerplant/ratio', (req, res) => {
     });
 });
 
-router.get('/powerplant/buffer', (req, res) => {
+router.get('/powerplant/buffer', auth.checkManager, (req, res) => {
     res.json({
         buffer : state.powerplant.buffer,
         unit: "kWh"
