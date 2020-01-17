@@ -101,10 +101,13 @@
 
             $('.delete-btn').click((e) => {
                 let deleteId = e.target.parentElement.parentElement.id;
-
+     
                 $.post('../deleteProsumer', {id: deleteId}, (data, status) => {
-                    if (status == 200) {
-                        $('#' + deleteId).remove();
+    
+                    if (status == 'success') {
+                        let obj = $(`#${deleteId}`);
+                
+                        obj.remove();
                     }
                 });
             });
