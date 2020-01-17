@@ -25,6 +25,19 @@
                 obj.removeClass('online');
                 obj.addClass('offline');
             });
+
+            socket.on('userRegister', function (data) {
+                console.log("reigster");
+                let tableRow = `<tr id=${data.id}>
+                    <td> <a href=${data.id}>${data.username}</a></td>
+                    <td class="offline">OFFLINE</td>
+                    <td>Outage: <span class='outage'>No.</span></td>
+                    <td><button class='delete-btn'>Delete</button></td>
+                    <td><form class="blockuser"><input type='number' min="10" max="100" value="10"><input type="submit" value="BLOCK"></form></td>
+
+                    </tr>`
+                $('.prosumerTable').append(tableRow);
+            });
           </script>
         <link rel="stylesheet" type="text/css" href="/css/style.css">
     </head>
@@ -73,7 +86,7 @@
             </div>
 
             <div>
-                <table>
+                <table id='prosumerTable'>
                     <tr>
                         <th>Name</th><th>Status</th><th>Blacked</th><th>Delete User</th><th>block for x seconds</th>
                     </tr>
