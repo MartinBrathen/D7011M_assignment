@@ -64,19 +64,19 @@
             function update() {
                 $.get(manager ? "../data/weather/" + id : "../data/weather", (data, status) => {
                     weather = data;
-                    $("#wind").text(`${weather.windspeed} ${weather.unit}`);
+                    $("#wind").text(`${ Math.round( weather.windspeed * 1000 + Number.EPSILON ) / 1000} ${weather.unit}`);
 
                     if (weather !== null){
                         production = {val: weather.windspeed * k, unit: 'kW'};
-                        $("#production").text(`${production.val} ${production.unit}`);
+                        $("#production").text(`${Math.round( production.val  * 1000 + Number.EPSILON ) / 1000} ${production.unit}`);
                     }
                 });
                 $.get(manager ? "../data/consumption/" + id : "../data/consumption", (data, status) => {
                     consumption = data;
-                    $("#consumption").text(`${consumption.consumption} ${consumption.unit}`);
+                    $("#consumption").text(`${Math.round( consumption.consumption * 1000 + Number.EPSILON ) / 1000} ${consumption.unit}`);
                     if (production !== null && consumption !== null) {
                         net = {val: production.val - consumption.consumption, unit: 'kW'};
-                        $("#net").text(`${net.val} ${net.unit}`);
+                        $("#net").text(`${ Math.round( net.val * 1000 + Number.EPSILON ) / 1000} ${net.unit}`);
                     }
                 });
 
@@ -87,7 +87,7 @@
 
                 $.get(manager ? "../data/buffer/" + id : "../data/buffer", (data, status) => {
                     buffer = data;
-                    $("#buffer").text(`${buffer.buffer} ${buffer.unit}`);
+                    $("#buffer").text(`${Math.round( buffer.buffer  * 1000 + Number.EPSILON ) / 1000} ${buffer.unit}`);
                 });
             }
 
