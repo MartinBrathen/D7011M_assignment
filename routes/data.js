@@ -103,6 +103,10 @@ router.get('/powerplant/production', auth.checkAuthenticated, (req, res) => {
     res.json({production: state.powerplant.production, unit: "kW"});
 });
 
+router.get('/outages', auth.checkAuthenticated, (req, res) => {
+    res.json({outages: state.outages});
+});
+
 router.post('/powerplant/update', auth.checkManager, (req, res) => {
     let target = req.body.target;
 

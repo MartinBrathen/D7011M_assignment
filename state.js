@@ -29,6 +29,7 @@ var outages = [];
 
 const exposed = {
     powerplant,
+    outages,
     getWindSpeed(long, lat, date){
         //date is js Date 
         // 1 day = 24h = 1440m = 86400s = 86400000ms
