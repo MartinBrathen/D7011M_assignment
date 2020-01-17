@@ -131,6 +131,13 @@ const exposed = {
         p.username = data.name;
 
         prosumers.set(data.id, p);
+    },
+
+    setOnline(id, online){
+        let p = prosumers.get(id);
+        if (p){
+            p.online = online;
+        }
     }
 }
 
@@ -193,6 +200,7 @@ async function initState() {
         }
         p.bufferSize = 1000;
         p.blocked = false;
+        p.online = false;
         prosumers.set(p.id, p);
     }
 
@@ -220,11 +228,9 @@ function updateState() {
     }
 
     for (var p of prosumers) {
-
         // netProduction - internal
         // outProductin - external (buffer accounted for)
         p = p[1];
-        
         p.windSpeed = exposed.getWindSpeed(p.latitude, p.longitude, new Date());
 
         p.production = p.windSpeed * k;
@@ -276,6 +282,7 @@ function updateState() {
                     totalConsumption -= bufferUsage;
                     possibleOutages.push(p.id);
                 }
+                
             }
         }
     }

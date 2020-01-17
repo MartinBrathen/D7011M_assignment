@@ -109,6 +109,7 @@ app.post(
     auth.checkNotAuthenticated, 
     passport.authenticate('local', {failureRedirect: '/login',failureFlash: true}), 
     (req, res) => {
+        state.setOnline(req.user.id, true);
         io.emit('userConnect', {id: req.user.id, name: req.user.username});
         res.redirect('/dashboard');
     }
@@ -133,6 +134,7 @@ app.post('/register', auth.checkNotAuthenticated, function(req, res, next) {
 });
 
 app.get('/logout', auth.checkAuthenticated, (req, res) => {
+    state.setOnline(req.user.id, false);
     io.emit('userDisconnect', {id: req.user.id, name: req.user.username});
     req.logOut(); // from passport
     res.redirect('/login');
@@ -197,7 +199,7 @@ app.post('/profile/delete', auth.checkAuthenticated, (req, res) => {
 });
 
 app.get('/powerplant', auth.checkAuthenticated, auth.checkManager, (req, res) => {
-    console.log(state.getProsumers());
+    // console.log(state.getProsumers());
     res.render('powerplant.ejs', {title: 'coal = good', id: req.user.id, name: req.user.name, picture: req.user.picture, prosumers: state.getProsumers()});
 });
 

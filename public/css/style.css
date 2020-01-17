@@ -50,3 +50,22 @@ select {
     display:block;
     position: absolute;
 }
+
+.description {
+    width: 100px;
+}
+
+td {
+    padding:3px;
+    border-top: 1px solid rgb(197, 197, 197); 
+    border-bottom: 1px solid rgb(197, 197, 197); 
+}
+
+table {
+    /* border: 1px solid black; */
+    border-collapse: collapse;
+}
+
+tr:hover {
+    background: rgb(242, 252, 197);
+}
