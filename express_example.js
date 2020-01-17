@@ -137,7 +137,7 @@ app.post('/register', auth.checkNotAuthenticated, function(req, res, next) {
             return res.redirect("/register")
         }
         
-        state.registerProsumer({_id: myUser.id, username: myUser.username, latitude: myUser.latitude, longitude: myUser.longitude, manager: myUser.manager});
+        state.registerProsumer({id: myUser.id, username: myUser.username, latitude: myUser.latitude, longitude: myUser.longitude, manager: myUser.manager});
         
     });
 

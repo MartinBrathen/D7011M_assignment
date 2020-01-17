@@ -204,7 +204,7 @@ async function initState() {
     var tempProsumers = await user.find().select({username: 1, latitude: 1, longitude: 1, overRatio: 1, underRatio: 1, manager: 1, picture: 1});
 
     for (var p of tempProsumers) {
-        console.log(p);
+
         if(!initProsumer(p)) {
             continue;
         }
@@ -265,7 +265,7 @@ function updateState() {
         // netProduction - internal
         // outProductin - external (buffer accounted for)
         p = p[1];
-        //console.log(p);
+        console.log(p);
         p.windSpeed = exposed.getWindSpeed(p.latitude, p.longitude, new Date());
 
         p.production = p.windSpeed * k;
