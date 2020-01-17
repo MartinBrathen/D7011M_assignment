@@ -199,7 +199,6 @@ app.post('/deleteProsumer', auth.checkAuthenticated, auth.checkManager, (req, re
         }
         state.deleteProsumerById(req.body.id);
         console.log("success");
-        req.logout();
         return res.sendStatus(200);
     });
     // user.findById(req.user.id, (err, myUser) => {
