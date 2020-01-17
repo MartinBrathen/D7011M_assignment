@@ -4,6 +4,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 const express = require('express');
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
@@ -53,13 +56,20 @@ app.use(express.static(__dirname + '/public'));
 //     next();
 // });
 
+io.on('connection', (socket) => {
+    socket.emit('news', { hello: 'world' });
+    socket.on('my other event', function (data) {
+        console.log(data);
+    });
+});
+
 app.use('/', (res, req, next) => {
     // console.log("recieved request, maybe log?");
     next();
 });
 
 app.get('/', (req, res) => {
-    res.send(req.user);
+    res.json(req.sessionStore.sessions);
 });
 
 app.get('/dashboard', auth.checkAuthenticated, (req, res) => {
@@ -179,5 +189,5 @@ app.get('/powerplant', auth.checkAuthenticated, auth.checkManager, (req, res) =>
     res.render('powerplant.ejs', {title: 'coal = good', id: req.user.id, name: req.user.name, picture: req.user.picture});
 });
 
-var server = app.listen(3000, () => {});
+server.listen(3000, () => {});
 
