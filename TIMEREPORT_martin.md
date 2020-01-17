@@ -16,3 +16,5 @@
 |20-01-04|240|User can now set coordinates for windspeed calc|
 |20-01-05|180|Planning|
 |20-01-05|20|Fixed better random generation of consumption|
+|20-01-15|150|Refactoring|
+|20-01-16|180|Calculation of outages|
