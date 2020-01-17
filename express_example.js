@@ -172,7 +172,7 @@ app.post('/profile/edit', auth.checkAuthenticated, (req, res) => {
             
                 res.redirect('/profile/edit');
             }else {
-                state.updateCoords({id: myUser.id, lat: myUser.latitude, long: myUser.longitude});
+                state.updateProsumer({id: myUser.id, lat: myUser.latitude, long: myUser.longitude, name: myUser.username});
                 res.redirect('/dashboard');
             }
         });

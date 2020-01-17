@@ -122,12 +122,13 @@ const exposed = {
         return Array.from(prosumers.values());
     },
 
-    updateCoords(data) {
+    updateProsumer(data) {
 
         let p = prosumers.get(data.id);
         
         p.latitude = data.lat;
         p.longitude = data.long;
+        p.username = data.name;
 
         prosumers.set(data.id, p);
     }
