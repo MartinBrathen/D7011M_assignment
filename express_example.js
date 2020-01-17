@@ -95,7 +95,7 @@ app.post('/pictureUrl', auth.checkAuthenticated, (req, res) => {
 });
 
 app.post('/blockProsumer', auth.checkAuthenticated, (req, res) => {
-    console.log(req.body.time + ", " + req.body.id);
+    
     if (req.body.time >= 10 && req.body.time <= 100) {
         state.blockProsumer(req.body.id, req.body.time); 
     }
@@ -198,7 +198,7 @@ app.post('/deleteProsumer', auth.checkAuthenticated, auth.checkManager, (req, re
             return;
         }
         state.deleteProsumerById(req.body.id);
-        console.log("success");
+        
         return res.sendStatus(200);
     });
     // user.findById(req.user.id, (err, myUser) => {
