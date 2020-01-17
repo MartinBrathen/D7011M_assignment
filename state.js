@@ -121,6 +121,16 @@ const exposed = {
     getProsumers() {
         return Array.from(prosumers.values());
     },
+
+    updateCoords(data) {
+
+        let p = prosumers.get(data.id);
+        
+        p.latitude = data.lat;
+        p.longitude = data.long;
+
+        prosumers.set(data.id, p);
+    }
 }
 
 
@@ -158,15 +168,18 @@ function randomG(v) {
 
 async function initState() {
 
-    var tempProsumers = await user.find().select({username: 1, coordinates: 1, overRatio: 1, underRatio: 1});
+    var tempProsumers = await user.find().select({username: 1, latitude: 1, longitude: 1, overRatio: 1, underRatio: 1, manager: 1});
 
     for (var p of tempProsumers) {
         if (p.manager) {
             continue;
         }
 
-        if (p.coordinates == null) {
-            p.coordinates = {lat: 0.0, long: 0.0};
+        if (p.latitude == null) {
+            p.latitude = 0.0;
+        }
+        if (p.longitude == null) {
+            p.longitude = 0.0;
         }
         if (p.overRatio == null) {
             p.overRatio = 0;
@@ -209,11 +222,12 @@ function updateState() {
 
         // netProduction - internal
         // outProductin - external (buffer accounted for)
-
         p = p[1];
         
-        p.windSpeed = exposed.getWindSpeed(p.coordinates.lat, p.coordinates.long, new Date());
+        p.windSpeed = exposed.getWindSpeed(p.latitude, p.longitude, new Date());
+
         p.production = p.windSpeed * k;
+
         p.consumption = exposed.getConsumption();
 
         var netProduction = p.production - p.consumption;

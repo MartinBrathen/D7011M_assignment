@@ -165,10 +165,18 @@ app.post('/profile/edit', auth.checkAuthenticated, (req, res) => {
             myUser.username = req.body.username.trim();
         }
         
-        myUser.save((err) => {
+        myUser.save((err) => { 
+            if (err) {
 
+                req.flash('error', err.message);
+            
+                res.redirect('/profile/edit');
+            }else {
+                state.updateCoords({id: myUser.id, lat: myUser.latitude, long: myUser.longitude});
+                res.redirect('/dashboard');
+            }
         });
-        res.redirect('/dashboard');
+        
     });
 });
 
