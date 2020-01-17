@@ -70,3 +70,11 @@ table {
 tr:hover {
     background: rgb(242, 252, 197);
 }
+
+.online {
+    color: green;
+}
+
+.offline {
+    color: red;
+}

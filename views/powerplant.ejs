@@ -12,12 +12,18 @@
 
             socket.on('userConnect', function (data) {
                 console.log("connect");
-                console.log(data);
+                let obj = $(`#${data.id}`).find('.offline');
+                obj.text('ONLINE');
+                obj.removeClass('offline');
+                obj.addClass('online');
             });
 
             socket.on('userDisconnect', function (data) {
                 console.log("disconnect");
-                console.log(data);
+                let obj = $(`#${data.id}`).find('.online');
+                obj.text('OFFLINE');
+                obj.removeClass('online');
+                obj.addClass('offline');
             });
           </script>
         <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -26,29 +32,6 @@
         <%- include('header'); %>
         <div class="content">
             <h1>Powerplant</h1>
-            <!-- <div class="item-container">
-                <div class="item">
-                    <span class="description">production: </span><span id="production"></span>
-                </div>
-                <div class="item">
-                    <span class="description">status:</span> <span id="status"></span>
-                </div>
-                <div class="item">
-                    <span class="description">market demand:</span> <span id="demand"></span>
-                </div>
-                <div class="item">
-                    <span class="description">electricity price:</span> <span id="price"></span>
-                </div>
-                <div class="item">
-                    <span class="description">modeled electricity price:</span> <span id="modeledPrice"></span>
-                </div>
-                <div class="item">
-                    <span class="description">buffer:</span> <span id="buffer"></span>
-                </div>
-                <div class="item">
-                    <span class="description">ratio:</span> <span id="ratio"></span>
-                </div>
-            </div> -->
             <div>
                 <table>
                     <tr><td>production</td><td id="production"></td></tr>
@@ -89,15 +72,6 @@
                 <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';">
             </div>
 
-            <!-- <div class='item-container'>
-                <ul>
-                <% for (var i = 0; i < prosumers.length; i++) { %>
-                    <li class="item" id="<%= prosumers[i].id %>"><a href='/dashboard/:<%= prosumers[i].id %>'><%= prosumers[i].username %></a>
-                        Online: <span class='online'> <%= prosumers[i].online %> </span>
-                        Outage: <span class='outage'>No.</span></li>
-                <% } %>
-                </ul>
-            </div> -->
             <div>
                 <table>
                     <tr>
@@ -107,9 +81,9 @@
                         <tr id="<%= prosumers[i].id %>">
                             <td> <a href='/dashboard/:<%= prosumers[i].id %>'><%= prosumers[i].username %></a> </td>
                             <% if (prosumers[i].online) { %>
-                                <td style="color:green">ONLINE</td>
+                                <td class="online">ONLINE</td>
                             <% }else{ %>
-                                <td style="color:red">OFFLINE</td>
+                                <td class="offline">OFFLINE</td>
                             <% } %>
                             <td>Outage: <span class='outage'>No.</span></td>
                         </tr>
