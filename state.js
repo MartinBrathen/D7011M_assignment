@@ -29,7 +29,6 @@ var outages = [];
 
 const exposed = {
     powerplant,
-    outages,
     getWindSpeed(long, lat, date){
         //date is js Date 
         // 1 day = 24h = 1440m = 86400s = 86400000ms
@@ -121,6 +120,10 @@ const exposed = {
     getProsumers() {
         return Array.from(prosumers.values());
     },
+
+    getOutages() {
+        return outages;
+    }
 }
 
 
@@ -205,7 +208,7 @@ function updateState() {
         }
     }
 
-    for (var p of prosumers) {
+    for (let p of prosumers) {
 
         // netProduction - internal
         // outProductin - external (buffer accounted for)
@@ -253,7 +256,8 @@ function updateState() {
         if (diff + ppBufferUsage < 0) {
             var possibleOutages = [];
             // consume from buffer instead of grid
-            for (const p of prosumers) {
+            for (let p of prosumers) {
+                p = p[1];
                 if (p.outProduction < 0) {
                     let bufferUsage = p.buffer >= - p.outProduction ? - p.outProduction : p.buffer;
                     p.buffer -= bufferUsage;
