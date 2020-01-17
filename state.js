@@ -144,6 +144,10 @@ const exposed = {
     },
     getProsumerById(id) {
         return prosumers.get(id);
+    },
+
+    deleteProsumerById(id) {
+        prosumers.delete(id);
     }
 }
 

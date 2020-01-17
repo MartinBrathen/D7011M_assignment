@@ -187,6 +187,23 @@ app.post('/profile/edit', auth.checkAuthenticated, (req, res) => {
     });
 });
 
+app.post('/deleteProsumer', auth.checkAuthenticated, auth.checkManager, (req, res) => {
+    
+    user.findByIdAndRemove(req.body.id, (err) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        state.deleteProsumerById(req.body.id);
+        console.log("success");
+        req.logout();
+        return res.sendStatus(200);
+    });
+    // user.findById(req.user.id, (err, myUser) => {
+    //     console.log(myUser.id);
+    // });
+});
+
 app.post('/profile/delete', auth.checkAuthenticated, (req, res) => {
     
     user.findByIdAndRemove(req.user.id, (err) => {
@@ -194,6 +211,7 @@ app.post('/profile/delete', auth.checkAuthenticated, (req, res) => {
             console.log(err);
             return res.redirect('/profile/edit');
         }
+        state.deleteProsumerById(req.user.id);
         console.log("success");
         req.logout();
         return res.redirect('/register');
