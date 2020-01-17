@@ -23,7 +23,6 @@ var price = 1;
 var prosumers = new Map();
 var demand = null;
 const k = 0.2;
-var consCycle = 3.14/2;
 var outages = [];
 
 const exposed = {
@@ -61,8 +60,7 @@ const exposed = {
     },
 
     getConsumption(){
-        consCycle += randomG(3) * 0.0005;
-        return (Math.cos(consCycle) + 1);
+        return (Math.cos(Date.now() * 0.00005 + randomG(3) * 0.1) + 1);
     },
 
     getProsumerWindSpeed(id) {

@@ -97,7 +97,7 @@
                 $.get("../data/buffer", (data, status) => {
                     buffer = data;
                     $("#buffer").text(`${buffer.buffer} ${buffer.unit}`);
-                })
+                });
             }
 
             function init() {
