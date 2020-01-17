@@ -7,34 +7,32 @@
     </head>
     <body>
         <%- include('header'); %>
-        <h1>Dashboard</h1>
-        <div class="item-container">
-            <div class="item">
-                speed: <span id="wind"></span>
-            </div>
-            <div class="item">
-                consumption: <span id="consumption"></span>
-            </div>
-            <div class="item">
-                production: <span id="production"></span>
-            </div>
-            <div class="item">
-                net production: <span id="net"></span>
-            </div>
-            <div class="item">
-                buffer: <span id="buffer"></span>
-            </div>
-            <div class="item">
-                price <span id="price"></span>
-            </div>
-            <div class="item">
-                Over-production ratio <span id="overRatio"></span>
-            </div>
-            <div class="item">
-                Under-production ratio <span id="underRatio"></span>
-            </div>
+        <div class="content">
+            <h1>Dashboard</h1>
             
-        </div>
+
+            <div>
+                <table>
+                    <tr> <td>speed</td><td id="wind"></td> </tr>
+                    <tr> <td>consumption</td><td id="consumption"></td> </tr>
+                    <tr> <td>production</td><td id="production"></td> </tr>
+                    <tr> <td>net production</td><td id="net"></td> </tr>
+                    <tr> <td>buffer</td><td id="buffer"></td> </tr>
+                    <tr> <td>price</td><td id="price"></td> </tr>
+                    <tr> <td>Over-production ratio</td><td id="overRatio"></td> </tr>
+                    <tr> <td>Under-production ratio</td><td id="underRatio"></td> </tr>
+                </table>
+            </div>
+
+            <form id="ratioForm">
+                Set over-production ratio: <input type="number" name="overRatio" min=0 max=1 step=0.05>
+                Set under-production ratio: <input type="number" name="underRatio" min=0 max=1 step=0.05>
+                <input type="submit" value="Submit">
+            </form>
+            
+            <div class="profile-pic">
+                <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
+            </div>
 
         <form id="ratioForm">
             Set over-production ratio: <input type="number" name="overRatio" min=0 max=1 step=0.05>
@@ -44,6 +42,7 @@
         
         <div class="profile-pic">
             <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
+        </div>
         </div>
         
         <script>
@@ -109,81 +108,8 @@
                     ratios = data;
                     $("#overRatio").text(`${ratios.over}`);
                     $("#underRatio").text(`${ratios.under}`);
-
-                    setInterval(update, 5 * 1000);
-                })
-                
-            }
-
-            setTimeout(init);
-        </script>
-
-
-
-        <!--
-        <h2>hello <%= name %></h2>
-        <form action="/" method="POST" id="sendText">
-            <input type="text" id="txt">
-            <button>test</button>
-        </form>
-        <button id="update">update</button></br>
-        consumption:<div class="meter"><span id="consumptionBar" class="bar"></span><span id="consumptionVal"></span></div>
-        <p id="minmaxConsumption"></p>
-
-        wind speed:<div class="meter"><span id="windBar" class="bar"></span><span id="windVal"></span></div>
-        <p id="minmaxWind"></p>
-
-        <script>
-            var maxConsumption = Number.NEGATIVE_INFINITY;
-            var minConsumption = Number.POSITIVE_INFINITY;
-            var maxWind = Number.NEGATIVE_INFINITY;
-            var minWind = Number.POSITIVE_INFINITY;
-
-            function updateConsumption() {
-                $.get("../data/consumption", (data, status) => {
-                    if (data.consumption > maxConsumption) {
-                        maxConsumption = data.consumption;
-                    }else if (data.consumption < minConsumption){
-                        minConsumption = data.consumption;
-                    }
-                    var rel = (data.consumption - minConsumption) / (maxConsumption - minConsumption);
-                    $("#minmaxConsumption").text(minConsumption + ", " + maxConsumption);
-                    $("#consumptionVal").text(data.consumption);
-                    $("#consumptionBar").stop(false, true);
-                    $("#consumptionBar").animate({width: rel * 100 + "%"}, "fast");
                 });
             }
-
-            function updateWind() {
-                $.get("../data/weather", (data, status) => {
-                    if (data.windspeed > maxWind) {
-                        maxWind = data.windspeed;
-                    }else if (data.windspeed < minWind){
-                        minWind = data.windspeed;
-                    }
-                    var rel = (data.windspeed - minWind) / (maxWind - minWind);
-                    $("#minmaxWind").text(minWind + ", " + maxWind);
-                    $("#windVal").text(data.windspeed);
-                    $("#windBar").stop(false, true); // stop the previous animation to prevent the animation queue from building up
-                    $("#windBar").animate({width: rel * 100 + "%"}, "fast");
-                });
-            }
-
-            // if this is moved to a separate file to clean up, then encase code in : $(document).ready(function(){ code }
-            $("#sendText").submit( (e) =>{
-                e.preventDefault();
-                $("body").css("background", $("#txt").val());
-            });
-
-            $("#update").click(()=>{
-                updateConsumption();
-                updateWind();
-            });
-            updateConsumption();
-            updateWind();
-            setInterval(updateConsumption, 10000);
-            setInterval(updateWind, 10000);
         </script>
-    -->
     </body>
 </html>

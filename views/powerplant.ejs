@@ -26,28 +26,39 @@
         <%- include('header'); %>
         <div class="content">
             <h1>Powerplant</h1>
-            <div class="item-container">
+            <!-- <div class="item-container">
                 <div class="item">
-                    production: <span id="production"></span>
+                    <span class="description">production: </span><span id="production"></span>
                 </div>
                 <div class="item">
-                    status: <span id="status"></span>
+                    <span class="description">status:</span> <span id="status"></span>
                 </div>
                 <div class="item">
-                    market demand: <span id="demand"></span>
+                    <span class="description">market demand:</span> <span id="demand"></span>
                 </div>
                 <div class="item">
-                    electricity price: <span id="price"></span>
+                    <span class="description">electricity price:</span> <span id="price"></span>
                 </div>
                 <div class="item">
-                    modeled electricity price: <span id="modeledPrice"></span>
+                    <span class="description">modeled electricity price:</span> <span id="modeledPrice"></span>
                 </div>
                 <div class="item">
-                    buffer: <span id="buffer"></span>
+                    <span class="description">buffer:</span> <span id="buffer"></span>
                 </div>
                 <div class="item">
-                    ratio: <span id="ratio"></span>
+                    <span class="description">ratio:</span> <span id="ratio"></span>
                 </div>
+            </div> -->
+            <div>
+                <table>
+                    <tr><td>production</td><td id="production"></td></tr>
+                    <tr><td>status</td><td id="status"></td></tr>
+                    <tr><td>market demand</td><td id="demand"></td></tr>
+                    <tr><td>electricity price</td><td id="price"></td></tr>
+                    <tr><td>modeled electricity price</td><td id="modeledPrice"></td></tr>
+                    <tr><td>buffer</td><td id="buffer"></td></tr>
+                    <tr><td>ratio</td><td id="ratio"></td></tr>
+                </table>
             </div>
             <hr>
             <div>
@@ -78,14 +89,32 @@
                 <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';">
             </div>
 
-            <div class='item-container'>
+            <!-- <div class='item-container'>
                 <ul>
                 <% for (var i = 0; i < prosumers.length; i++) { %>
                     <li class="item" id="<%= prosumers[i].id %>"><a href='/dashboard/:<%= prosumers[i].id %>'><%= prosumers[i].username %></a>
-                        Online: <span class='online'>No.</span>
+                        Online: <span class='online'> <%= prosumers[i].online %> </span>
                         Outage: <span class='outage'>No.</span></li>
                 <% } %>
                 </ul>
+            </div> -->
+            <div>
+                <table>
+                    <tr>
+                        <th>Name</th><th>Status</th><th>Blacked</th><th>Delete User</th>
+                    </tr>
+                    <% for (var i = 0; i < prosumers.length; i++) { %>
+                        <tr id="<%= prosumers[i].id %>">
+                            <td> <a href='/dashboard/:<%= prosumers[i].id %>'><%= prosumers[i].username %></a> </td>
+                            <% if (prosumers[i].online) { %>
+                                <td style="color:green">ONLINE</td>
+                            <% }else{ %>
+                                <td style="color:red">OFFLINE</td>
+                            <% } %>
+                            <td>Outage: <span class='outage'>No.</span></td>
+                        </tr>
+                    <% } %>
+                </table>
             </div>
         </div>
         
