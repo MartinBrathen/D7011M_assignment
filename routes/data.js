@@ -40,16 +40,6 @@ router.get('/weather/world', (req, res) => {
     res.send(state.getWindTable(-90, 90, 0, 360, 60));
 });
 
-router.get('/weather', (req, res) => {
-    var lat = 0.0;
-    var long = 0.0;
-    
-    res.json({
-        "windspeed" : state.getWindSpeed(lat, long, new Date()),
-        "unit": "m/s"
-    });
-});
-
 router.get('/weather/:lat/:long', (req, res) => {
 
     var lat = req.params.lat;
@@ -61,7 +51,7 @@ router.get('/weather/:lat/:long', (req, res) => {
     });
 });
 
-router.get('/weather/id', (req, res) => {
+router.get('/weather', (req, res) => {
     res.json({
         "windspeed" : state.getProsumerWindSpeed(req.user.id),
         "unit": "m/s"
@@ -83,16 +73,6 @@ router.get('/model/price', (req, res) => {
 });
 
 router.get('/consumption', (req, res) => {
-    var lat = req.params.lat;
-    var long = req.params.long;
-    
-    res.json({
-        consumption : state.getConsumption(),
-        'unit' : 'kW',
-    });
-});
-
-router.get('/consumption/id', (req, res) => {
     res.json({
         consumption : state.getProsumerConsumption(req.user.id),
         'unit' : 'kW',
