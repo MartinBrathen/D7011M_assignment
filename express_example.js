@@ -136,7 +136,7 @@ app.post('/register', auth.checkNotAuthenticated, function(req, res, next) {
             
             return res.redirect("/register")
         }
-        
+        io.emit('userRegister', {id: myUser.id, username: myUser.username});
         state.registerProsumer({id: myUser.id, username: myUser.username, latitude: myUser.latitude, longitude: myUser.longitude, manager: myUser.manager});
         
     });
