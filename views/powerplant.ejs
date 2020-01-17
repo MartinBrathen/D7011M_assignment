@@ -79,7 +79,7 @@
                     </tr>
                     <% for (var i = 0; i < prosumers.length; i++) { %>
                         <tr id="<%= prosumers[i].id %>">
-                            <td> <a href='/dashboard/:<%= prosumers[i].id %>'><%= prosumers[i].username %></a> </td>
+                            <td> <a href='/dashboard/<%= prosumers[i].id %>'><%= prosumers[i].username %></a> </td>
                             <% if (prosumers[i].online) { %>
                                 <td class="online">ONLINE</td>
                             <% }else{ %>

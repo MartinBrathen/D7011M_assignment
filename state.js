@@ -84,6 +84,7 @@ const exposed = {
     },
 
     getProsumerRatios(id) {
+        console.log(id);
         var p = prosumers.get(id);
         return {over: p.overRatio, under: p.underRatio};
     },
@@ -151,6 +152,9 @@ const exposed = {
         if (p){
             p.online = online;
         }
+    },
+    getProsumerById(id) {
+        return prosumers.get(id);
     }
 }
 
@@ -189,7 +193,7 @@ function randomG(v) {
 
 async function initState() {
 
-    var tempProsumers = await user.find().select({username: 1, latitude: 1, longitude: 1, overRatio: 1, underRatio: 1, manager: 1});
+    var tempProsumers = await user.find().select({username: 1, latitude: 1, longitude: 1, overRatio: 1, underRatio: 1, manager: 1, picture: 1});
 
     for (var p of tempProsumers) {
         if (p.manager) {

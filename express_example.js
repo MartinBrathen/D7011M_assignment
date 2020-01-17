@@ -71,7 +71,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/dashboard/:id', auth.checkAuthenticated, auth.checkManager, (req, res) => {
-    res.render('dashboard', { title: 'hello there', id: req.params.id, name: req.user.name, picture: req.user.picture, manager: true});
+    let p = state.getProsumerById(req.params.id);
+    res.render('dashboard', { title: 'hello there', id: req.params.id, name: p.username, picture: p.picture, manager: true});
 });
 
 app.get('/dashboard', auth.checkAuthenticated, (req, res) => {
