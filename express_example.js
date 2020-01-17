@@ -129,7 +129,7 @@ app.get('/register', auth.checkNotAuthenticated, (req, res) => {
 });
 
 app.post('/register', auth.checkNotAuthenticated, function(req, res, next) {
-    user.register(new user({username: req.body.name}), req.body.password, function(err) {
+    user.register(new user({username: req.body.name}), req.body.password, function(err, myUser) {
         if (err) {
             console.log('error: ' , err);
             req.flash('error', err.message);
@@ -137,8 +137,12 @@ app.post('/register', auth.checkNotAuthenticated, function(req, res, next) {
             return res.redirect("/register")
         }
         
-        res.redirect('/login');
+        state.registerProsumer({_id: myUser.id, username: myUser.username, latitude: myUser.latitude, longitude: myUser.longitude, manager: myUser.manager});
+        
     });
+
+    
+    res.redirect('/login');
 });
 
 app.get('/logout', auth.checkAuthenticated, (req, res) => {
