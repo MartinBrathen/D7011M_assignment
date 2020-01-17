@@ -70,7 +70,7 @@
 
             function update() {
                 
-                $.get("../data/weather/id", (data, status) => {            
+                $.get("../data/weather", (data, status) => { 
                     weather = data;
                     $("#wind").text(`${weather.windspeed} ${weather.unit}`);
 
