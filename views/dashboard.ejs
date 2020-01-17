@@ -39,9 +39,10 @@
 
             const id = "<%= id%>"
             const manager = "<%= manager%>"
-
-            console.log('manager: ' + manager);
-            console.log('id: ' + id);
+            console.log(manager);
+            if (manager == false) {
+                console.log('manager! wtf');
+            }
 
             $("#ratioForm").submit((e)=>{
                 e.preventDefault();
