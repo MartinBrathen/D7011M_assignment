@@ -93,8 +93,19 @@ const exposed = {
     },
 
     blockProsumer(id, t) {
-        prosumers.get(id).blocked = true;
-        setTimeout((id) => {prosumers.get(id).blocked = false;}, t, id);
+     
+
+        let prosumer = prosumers.get(id);
+     
+        if (prosumer){
+            prosumer.blocked = true;
+           
+            setTimeout(function () {
+                prosumer.blocked = false;
+                
+            }, t * 1000);
+        }
+        
     },
 
     getDemand() {
@@ -237,7 +248,6 @@ function updateState() {
         p.windSpeed = exposed.getWindSpeed(p.latitude, p.longitude, new Date());
 
         p.production = p.windSpeed * k;
-
         p.consumption = exposed.getConsumption();
 
         var netProduction = p.production - p.consumption;

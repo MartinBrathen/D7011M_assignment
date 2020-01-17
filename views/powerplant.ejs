@@ -75,7 +75,7 @@
             <div>
                 <table>
                     <tr>
-                        <th>Name</th><th>Status</th><th>Blacked</th><th>Delete User</th>
+                        <th>Name</th><th>Status</th><th>Blacked</th><th>Delete User</th><th>block for x seconds</th>
                     </tr>
                     <% for (var i = 0; i < prosumers.length; i++) { %>
                         <tr id="<%= prosumers[i].id %>">
@@ -86,6 +86,8 @@
                                 <td class="offline">OFFLINE</td>
                             <% } %>
                             <td>Outage: <span class='outage'>No.</span></td>
+                            <td><a href="#">ELIMINATE!</a></td>
+                            <td><form class="blockuser"><input type='number' min="10" max="100" value="10"><input type="submit" value="BLOCK"></form></td>
                         </tr>
                     <% } %>
                 </table>
@@ -159,6 +161,13 @@
                 ratio = {ratio: e.target[0].value};
                 $("#ratio").text(`${ratio.ratio}`);
                 $.post('../data/powerplant/ratio', ratio);
+            });
+
+            $(".blockuser").submit((e)=>{
+                e.preventDefault();
+                let time = e.target[0].valueAsNumber;
+                let id = e.target.parentElement.parentElement.id;
+                $.post('../blockProsumer', {time: time, id: id});
             });
 
 
