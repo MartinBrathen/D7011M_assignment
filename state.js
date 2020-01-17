@@ -204,7 +204,9 @@ async function initState() {
     var tempProsumers = await user.find().select({username: 1, latitude: 1, longitude: 1, overRatio: 1, underRatio: 1, manager: 1, picture: 1});
 
     for (var p of tempProsumers) {
-        initProsumer(p);
+        if(!initProsumer(p)) {
+            continue;
+        }
     }
 
     setInterval(updateState, 1000);
@@ -212,7 +214,7 @@ async function initState() {
 
 function initProsumer(p) {
     if (p.manager) {
-        continue;
+        return false;
     }
 
     if (p.latitude == null) {
@@ -234,6 +236,7 @@ function initProsumer(p) {
     p.blocked = false;
     p.online = false;
     prosumers.set(p.id, p);
+    return true;
 }
 
 function updateState() {
