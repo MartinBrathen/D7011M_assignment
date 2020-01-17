@@ -75,11 +75,17 @@
             
             <hr>
             <div class="profile-pic">
-                <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
+                <img src="<%=picture%>" alt="no picture found" onerror="this.src='/img/house.jpg';">
             </div>
 
             <div class='item-container'>
-                <%= prosumers %>
+                <ul>
+                <% for (var i = 0; i < prosumers.length; i++) { %>
+                    <li class="item" id="<%= prosumers[i].id %>"><a href='/dashboard/:<%= prosumers[i].id %>'><%= prosumers[i].username %></a>
+                        Online: <span class='online'>No.</span>
+                        Outage: <span class='outage'>No.</span></li>
+                <% } %>
+                </ul>
             </div>
         </div>
         
@@ -88,8 +94,6 @@
 
             const id = "<%= id%>";
 
-            const prosumers = "<%= prosumers%>";
-            console.log(prosumers);
 
             // start, stop, set production of plant
             $("#start_button").click((e) => {
