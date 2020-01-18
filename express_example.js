@@ -7,6 +7,15 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minutes
+    max: 200 // limit each IP to 200 requests per windowMs
+  });
+
+app.use(limiter);
+
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
