@@ -187,7 +187,9 @@ app.post('/profile/edit', auth.checkAuthenticated, (req, res) => {
             
                 res.redirect('/profile/edit');
             }else {
-                state.updateProsumer({id: myUser.id, lat: myUser.latitude, long: myUser.longitude, name: myUser.username});
+                if(!myUser.manager){
+                    state.updateProsumer({id: myUser.id, lat: myUser.latitude, long: myUser.longitude, name: myUser.username});
+                }
                 res.redirect('/dashboard');
             }
         });
