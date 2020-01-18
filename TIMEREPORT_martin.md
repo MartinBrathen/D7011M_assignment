@@ -18,3 +18,4 @@
 |20-01-05|20|Fixed better random generation of consumption|
 |20-01-15|150|Refactoring|
 |20-01-16|180|Calculation of outages|
+|20-01-17|700|Mostly manager stuff, like list of prosumers, buffixes too|
