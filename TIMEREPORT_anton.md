@@ -19,5 +19,6 @@
 |20-01-15|380|manager plant control page|
 |20-01-16|140|powerplant state update loop|
 |20-01-17|780|manager user list with actions|
+|20-01-18|440|report writing|
 
 
