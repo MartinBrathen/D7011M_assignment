@@ -10,7 +10,20 @@ const path = require('path');
 const multer = require('multer');
 const fs = require('fs');
 
-const upload = multer({dest: 'pictures/'});
+const upload = multer({
+    dest: 'pictures/',
+    fileFilter: (req, file, cb) => {
+        if (
+        !file.mimetype.includes("jpeg") &&
+        !file.mimetype.includes("jpg") &&
+        !file.mimetype.includes("png") &&
+        !file.mimetype.includes("gif")
+        ) {
+        return cb(null, false, new Error("Only images are allowed"));
+        }
+        cb(null, true);
+    }
+});
 
 const rateLimit = require('express-rate-limit');
 
@@ -210,6 +223,10 @@ app.post('/profile/edit', auth.checkAuthenticated, (req, res) => {
 
 app.post('/profile/upload-pic', auth.checkAuthenticated, upload.single('pic'), (req, res) => {
 
+    if (!req.file) {
+        res.redirect('/profile/edit');
+        return;
+    }
     user.findById(req.user.id, (err, myUser) => {
 
         if (err) {
@@ -238,6 +255,12 @@ app.post('/profile/upload-pic', auth.checkAuthenticated, upload.single('pic'), (
 app.get('/picture', (req, res) => {
 
     user.findById(req.user.id, (err, myUser) => {
+
+        if (err) {
+            req.flash('error', err.message);
+            res.redirect('/profile/edit');
+            return;
+        }
         
         res.sendFile(path.join(__dirname, "./pictures/" + myUser.picture));
         
