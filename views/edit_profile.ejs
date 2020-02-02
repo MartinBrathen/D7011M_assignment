@@ -16,8 +16,6 @@
                 
                 <input name="username" id="username" type="text" value ="<%= locals.username %>" placeholder="username"><br>
 
-                <input name="profilepic" id="profilepic" type="text" placeholder="profile picture url"><br>
-
                 <!-- <label>password</label>
                 <input name="password" id="password" type="password" placeholder=""><br>
 
@@ -29,6 +27,15 @@
                 <input name="long" id="long" type="number" placeholder="longitude"><br>
 
                 <input type="submit" value="Edit data">
+            </form>
+            <form method="POST" action="/profile/upload-pic" enctype="multipart/form-data">
+                <div>
+                    <label>Select your profile picture:</label>
+                    <input type="file" name="pic" />
+                </div>
+                <div>
+                    <input type="submit" name="upload_pic" value="Upload" />
+                </div>
             </form>
             <form action="/profile/delete" method="POST" onsubmit="return confirm('You are about to delete this account and all data associated to it forever');">
                 <input type="submit" value="Delete account">

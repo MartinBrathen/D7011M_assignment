@@ -84,7 +84,6 @@ const exposed = {
     },
 
     getProsumerRatios(id) {
-        console.log(id);
         var p = prosumers.get(id);
         return {over: p.overRatio, under: p.underRatio};
     },

@@ -17,7 +17,6 @@ router.get('/', (req, res) => {
 //weather/{d}.{d}/{d}.{d}/YYYYMMDDhhmmss
 router.get('/weather/:lat/:long/:year-:month-:day::hr::min::sec', (req, res) => {
     ///weather/:lat/:long/:year(\d{4})?:month(\d{2})?:day(\d{2})?:hr(\d{2})?:min(\d{2})?:sec(\d{2})?
-    console.log("test");
     var lat = req.params.lat;
     var long = req.params.long;
     var date;

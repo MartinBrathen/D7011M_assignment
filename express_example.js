@@ -6,6 +6,11 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
+const path = require('path');
+const multer = require('multer');
+const fs = require('fs');
+
+const upload = multer({dest: 'pictures/'});
 
 const rateLimit = require('express-rate-limit');
 
@@ -25,6 +30,7 @@ const session = require('express-session');
 var mongoose = require('mongoose');
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology', true);
+mongoose.set('useFindAndModify', false);
 mongoose.connect('mongodb://localhost:27017/prosumer');
 const user = require('./models/user');
 
@@ -181,10 +187,6 @@ app.post('/profile/edit', auth.checkAuthenticated, (req, res) => {
             myUser.longitude = req.body.long.trim();
         }
 
-        if (req.body.profilepic != '') {
-            myUser.picture = req.body.profilepic.trim();
-        }
-
         if (req.body.username != '') {
             myUser.username = req.body.username.trim();
         }
@@ -204,6 +206,43 @@ app.post('/profile/edit', auth.checkAuthenticated, (req, res) => {
         });
         
     });
+});
+
+app.post('/profile/upload-pic', auth.checkAuthenticated, upload.single('pic'), (req, res) => {
+
+    user.findById(req.user.id, (err, myUser) => {
+
+        if (err) {
+            req.flash('error', err.message);
+            res.redirect('/profile/edit');
+        } else {
+            fs.unlink("./pictures/" + myUser.picture, (err) => {
+                if (err) {
+                    console.log("failed to delete local image:"+err);
+                } else {
+                    console.log('successfully deleted local image');                                
+                }
+            });
+            user.updateOne({_id: myUser.id}, {$set: {picture: req.file.filename}}, (err) => {
+                if (err) {
+                    req.flash('error', err.message);
+                    res.redirect('/profile/edit');
+                } else {
+                    res.redirect('/dashboard');
+                }
+            });
+        }
+    });
+});
+
+app.get('/picture', (req, res) => {
+
+    user.findById(req.user.id, (err, myUser) => {
+        
+        res.sendFile(path.join(__dirname, "./pictures/" + myUser.picture));
+        
+    });
+
 });
 
 app.post('/deleteProsumer', auth.checkAuthenticated, auth.checkManager, (req, res) => {
