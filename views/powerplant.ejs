@@ -61,6 +61,7 @@
                 Target production <input type="number" min="0" max="1000" placeholder="0-1000" id="target_production"> kW<br>
                 <button id="start_button">START/UPDATE</button>
                 <button id="stop_button">STOP</button>
+                <p id="targetCountDown"></p>
             </div>
             <hr>
             <div>
@@ -130,6 +131,9 @@
                 if (!isNaN(target) && target >= 0 && target <= 1000) {
                     $.post("../data/powerplant/update", {target: target}, (e) => {
                         console.log(e);
+                        if (e.changed){
+                            targetCountDown.newTarget(target);
+                        }
                         if (e.status) {
                             $("#status").text(`${e.status}`);
                         }
@@ -140,13 +144,16 @@
             $("#stop_button").click((e) => {
                 $.post("../data/powerplant/update", {target: 0}, (e) => {
                     console.log(e);
-                   
+                    if (e.changed){
+                        targetCountDown.newTarget(0);
+                    }
+                    
                 });
             });
 
             $("#target_production").on('input', (e) => {
                 let target = $("#target_production")[0].valueAsNumber;
-
+                
                 if (target < 0){
                     $("#input_error").text("number is to small");
                 }else if (isNaN(target)){
@@ -157,6 +164,30 @@
                     $("#input_error").text("");
                 }
             });
+            
+            let targetCountDown = {
+                date: null,
+                target: 0,
+                newTarget: function(target){
+                    let now = new Date();
+                    let date = new Date();
+                    date.setSeconds(date.getSeconds() + 30);
+                    this.date = date;
+                    this.target = target;          
+                }
+            };
+            
+            let updateCountDown = setInterval(()=>{
+                let now = new Date();
+                let secondsLeft = Math.round((targetCountDown.date - now) / 1000);
+                if (secondsLeft > 0){
+                    document.getElementById("targetCountDown").innerHTML = `target production: ${targetCountDown.target}, seconds left: ${secondsLeft}`;
+                }else{
+                    document.getElementById("targetCountDown").innerHTML = "";
+                }
+                
+            },1000);
+            
 
             // price input
             $("#price_input").on('input', (e) => {

@@ -17,7 +17,7 @@ noise.SetNoiseType(fastnoise.Simplex);
  * status: stopped|running|starting
  * ratio: % sent to the buffer
  */
-var powerplant = {status: "stopped", buffer: 0, production: 0, maxBuffer: 1000, ratio: .5};
+var powerplant = {status: "stopped", buffer: 0, production: 0, maxBuffer: 1000, ratio: .5, target: 0};
 
 // electricity price  set by a a manager
 var price = 1;

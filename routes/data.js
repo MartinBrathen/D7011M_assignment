@@ -133,25 +133,32 @@ router.get('/outages', auth.checkAuthenticated, (req, res) => {
 
 router.post('/powerplant/update', auth.checkManager, (req, res) => {
     let target = req.body.target;
+    let changed = false;
+    if (target != state.powerplant.target){
+        state.powerplant.target = target;
+        // clamp target to 0:1000
+        if (target < 0){target = 0;}
+        else if (target > 1000){target = 1000;}
 
-    // clamp target to 0:1000
-    if (target < 0){target = 0;}
-    else if (target > 1000){target = 1000;}
+        if (state.powerplant.status == "stopped" && target > 0) {
+            state.powerplant.status = "starting";
+        }
 
-    if (state.powerplant.status == "stopped" && target > 0) {
-        state.powerplant.status = "starting";
+        setTimeout(() => {
+            if (target == state.powerplant.target){
+                state.powerplant.production = target;
+                if (target > 0) {
+                    state.powerplant.status = "running";
+                }else if (target == 0) {
+                    state.powerplant.status = "stopped";
+                }
+            }
+        }, 30000);
+
+        changed = true;
     }
 
-    setTimeout(() => {
-        state.powerplant.production = target;
-        if (target > 0) {
-            state.powerplant.status = "running";
-        }else if (target == 0) {
-            state.powerplant.status = "stopped";
-        }
-    }, 30000);
-
-    res.json({status: state.powerplant.status});
+    res.json({status: state.powerplant.status, changed: changed});
 });
 
 router.get('/price', (req, res) => {
