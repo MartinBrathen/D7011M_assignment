@@ -4,4 +4,4 @@ assignment for course D7011E
 ## Demo
 [Website](https://www.amd7011m.tk)
 
-To log in as manager, enter 'admin' as both password and username.
+To log in as manager, enter 'admin' as both password and username. Use http in the url if https is no longer working
