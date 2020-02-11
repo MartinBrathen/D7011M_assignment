@@ -244,13 +244,14 @@ function updateState() {
     
     var totalProduction = 0;
     var totalConsumption = 0;
-    outages = [];
+    var possibleOutages = [];
+    var ppOutProduction = 0;
     //POWERPLANT
     // plantOut - electricity going from the plant to the net, not including the buffer
     var ppBufferUsage = 0;
     if (powerplant.status == "running"){
         powerplant.buffer += powerplant.production * powerplant.ratio;
-        totalProduction = powerplant.production * (1-powerplant.ratio);
+        ppOutProduction = powerplant.production * (1-powerplant.ratio);
 
         if (powerplant.buffer > powerplant.maxBuffer) {
             // powerplant buffer is overfilled
@@ -299,13 +300,12 @@ function updateState() {
     }
 
     // risk of outage
-    var diff = totalProduction - totalConsumption;
+    var diff = ppOutProduction + totalProduction - totalConsumption;
     if (diff < 0) {
         let ppBufferUsage = powerplant.buffer >= - diff ? - diff : powerplant.buffer;
         powerplant.buffer -= ppBufferUsage;
 
         if (diff + ppBufferUsage < 0) {
-            var possibleOutages = [];
             // consume from buffer instead of grid
             for (let p of prosumers) {
                 p = p[1];
@@ -322,8 +322,10 @@ function updateState() {
     }
     
     // report outages
-    if (totalProduction - totalConsumption + ppBufferUsage < 0) {
+    if (ppOutProduction + totalProduction - totalConsumption + ppBufferUsage < 0) {
         outages = possibleOutages;
+    } else {
+        outages = [];
     }
     demand = totalProduction - totalConsumption;
 }
