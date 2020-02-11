@@ -110,18 +110,6 @@ app.get('/dashboard', auth.checkAuthenticated, (req, res) => {
     res.render('dashboard', { title: 'hello there', id: req.user.id, name: req.user.name, picture: req.user.picture, manager: false});
 });
 
-app.post('/pictureUrl', auth.checkAuthenticated, (req, res) => {
-
-    user.findById(req.user.id, (err, myUser) => {
-
-        myUser.picture = req.body.picture.trim();
-        myUser.save((err) => {
-
-        });
-        res.redirect('/dashboard');
-    });
-});
-
 app.post('/blockProsumer', auth.checkAuthenticated, (req, res) => {
     
     if (req.body.time >= 10 && req.body.time <= 100) {
@@ -252,7 +240,7 @@ app.post('/profile/upload-pic', auth.checkAuthenticated, upload.single('pic'), (
     });
 });
 
-app.get('/picture', (req, res) => {
+app.get('/picture', auth.checkAuthenticated, (req, res) => {
 
     user.findById(req.user.id, (err, myUser) => {
 
@@ -266,6 +254,21 @@ app.get('/picture', (req, res) => {
         
     });
 
+});
+
+app.get('/picture/:id', auth.checkAuthenticated, auth.checkManager, (req, res) => {
+    
+    user.findById(req.params.id, (err, myUser) => {
+
+        if (err) {
+            req.flash('error', err.message);
+            res.redirect('/profile/edit');
+            return;
+        }
+        
+        res.sendFile(path.join(__dirname, "./pictures/" + myUser.picture));
+        
+    });
 });
 
 app.post('/deleteProsumer', auth.checkAuthenticated, auth.checkManager, (req, res) => {

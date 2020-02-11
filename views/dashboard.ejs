@@ -24,16 +24,24 @@
                 </table>
             </div>
             <% if (!manager) {%>
+                
             <form id="ratioForm">
                 Set over-production ratio: <input type="number" name="overRatio" min=0 max=1 step=0.05>(0.0 = no power to buffer)<br>
                 Set under-production ratio: <input type="number" name="underRatio" min=0 max=1 step=0.05>(0.0 =  don't take away from buffer when over-producing.)
                 <input type="submit" value="Submit">
             </form>
-            <% }%>
-            
+
             <div class="profile-pic">
                 <img src="/picture" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
             </div>
+
+            <% } else {%>
+            
+            <div class="profile-pic">
+                <img src="/picture/<%= id%>" alt="no picture found" onerror="this.src='/img/house.jpg';"> 
+            </div>
+
+            <% }%>
         </div>
         
         <script>
