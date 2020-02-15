@@ -58,7 +58,7 @@
             <hr>
             <div>
                 <p id="input_error"></p>
-                Target production <input type="number" min="0" max="1000" placeholder="0-1000" id="target_production"> kW<br>
+                Target production <input type="number" min="1" max="1000" placeholder="1-1000" id="target_production"> kW<br>
                 <button id="start_button">START/UPDATE</button>
                 <button id="stop_button">STOP</button>
                 <p id="targetCountDown"></p>
@@ -154,7 +154,7 @@
             $("#target_production").on('input', (e) => {
                 let target = $("#target_production")[0].valueAsNumber;
                 
-                if (target < 0){
+                if (target <= 0){
                     $("#input_error").text("number is to small");
                 }else if (isNaN(target)){
                     $("#input_error").text("please enter a number");
