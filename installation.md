@@ -6,7 +6,7 @@ This is for localhost only
 2. Install mongodb
 3. Clone this repo
 4. cd into it
-5. create a file called '.env' and add line 'SECRET=[a secret string]'
+5. create a file called '.env' and add line 'SESSION_SECRET=[a secret string]'
 6. install all dependencies: ```npm install```
 7. run: ```node express_example.js```
 
